@@ -1,0 +1,13 @@
+.form__login {
+  width: 50%;
+  margin: 0 auto;
+}
+.form__login .form__login-content {
+  margin-bottom: 20px;
+}
+
+@media screen and (max-width: 1000px) {
+  .form__login {
+    width: 80%;
+  }
+} /*# sourceMappingURL=Login.css.map */
