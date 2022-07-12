@@ -1,0 +1,34 @@
+.login-page {
+  width: 100%;
+  height: 100%;
+  // background-color: #112a45;
+  // color: white !important;
+  // color: $blue-4;
+  .login-col {
+    padding: "20px";
+    display: flex;
+    align-items: center;
+    &.left {
+      background-color: $blue-8;
+    }
+    .login-tab__col {
+      width: 80%;
+      margin: 0 auto;
+    }
+    .border-icons {
+      // padding: 3px;
+      // //   background-color: red;
+      // margin: 0 3px;
+      // border: 2px solid $blue-4;
+      // border-radius: 50%;
+      .icon-login {
+        font-size: $fs-4;
+        border-radius: 50%;
+        background-color: #112a45;
+        color: white !important;
+        margin: 0 5px;
+        cursor: pointer;
+      }
+    }
+  }
+}

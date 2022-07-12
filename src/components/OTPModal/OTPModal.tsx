@@ -1,5 +1,6 @@
-import { Button, Modal } from "antd";
+import { Button, Modal, Typography } from "antd";
 import React, { useState } from "react";
+import { useEffect } from "react";
 import OtpInput from "react-otp-input";
 
 interface Props {
@@ -9,20 +10,40 @@ interface Props {
 
 const OTPModal: React.FC<Props> = ({ visible, setVisible }) => {
   const [loading, setLoading] = useState(false);
+  const [otp, setOtp] = useState<string>("");
+  const [isError, setIsError] = useState<boolean>(false);
+  const [messageError, setMessageError] = useState<string>("");
+  useEffect(() => {
+    setIsError(false);
+    setOtp("");
+  }, [visible]);
   //   const [visible, setVisible] = useState(false);
   const handleChange = (otp: any) => {
-    console.log(otp);
+    if (otp != "") {
+      setIsError(false);
+    }
+    setOtp(otp);
   };
   const showModal = () => {
     setVisible(true);
   };
 
   const handleOk = () => {
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      setVisible(false);
-    }, 3000);
+    if (otp == "") {
+      setIsError(true);
+      setMessageError("Please enter the verification code!");
+    } else {
+      if (otp.length != 6) {
+        setIsError(true);
+        setMessageError("Please enter full verification code!");
+      } else {
+        setLoading(true);
+        setTimeout(() => {
+          setLoading(false);
+          setVisible(false);
+        }, 3000);
+      }
+    }
   };
 
   const handleCancel = () => {
@@ -31,18 +52,12 @@ const OTPModal: React.FC<Props> = ({ visible, setVisible }) => {
   return (
     <div>
       <>
-        <Button type="primary" onClick={showModal}>
-          Open Modal with customized footer
-        </Button>
         <Modal
           visible={visible}
-          title="Title"
+          // title="Enter verification code"
           onOk={handleOk}
           onCancel={handleCancel}
           footer={[
-            <Button key="back" onClick={handleCancel}>
-              Return
-            </Button>,
             <Button
               key="submit"
               type="primary"
@@ -51,23 +66,38 @@ const OTPModal: React.FC<Props> = ({ visible, setVisible }) => {
             >
               Submit
             </Button>,
-            <Button
-              key="link"
-              href="https://google.com"
-              type="primary"
-              loading={loading}
-              onClick={handleOk}
-            >
-              Search on Google
+            <Button danger key="back" onClick={handleCancel}>
+              Cancel
             </Button>,
           ]}
         >
-          <OtpInput
-            value={"1"}
-            onChange={handleChange}
-            numInputs={6}
-            separator={<span>-</span>}
-          />
+          <Typography.Title
+            style={{ margin: "30px 0", textAlign: "center" }}
+            level={2}
+          >
+            Enter verification code{" "}
+          </Typography.Title>
+          <Typography.Text>
+            We have sent a 6-digit verification code to your email!
+          </Typography.Text>
+          <br />
+          <Typography.Text>
+            Note**: Code is valid for 2 minutes!
+          </Typography.Text>
+          <div style={{ marginBottom: "30px", margin: "40px auto" }}>
+            <OtpInput
+              value={otp}
+              onChange={handleChange}
+              numInputs={6}
+              separator={<span className="otp-span">-</span>}
+              inputStyle="input-otp"
+            />
+          </div>
+          {isError && (
+            <Typography.Text type="danger" strong>
+              {messageError}{" "}
+            </Typography.Text>
+          )}
         </Modal>
       </>
     </div>
