@@ -6,12 +6,15 @@ import Login from "../../components/Login/Login";
 import Register from "../../components/Register/Register";
 // import Lottie from "react-lottie";
 import * as animationData from "../../assets/main.json";
+import * as animationDataCheck from "../../assets/check.json";
+
 import Lottie from "react-lottie";
 const { TabPane } = Tabs;
 const AuthPage = () => {
   const element = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
   const [activeKey, setActiveKey] = useState<string>("1");
+  const [col, setCol] = useState<boolean>(false);
   const handleLogin = () => {
     setVisible(true);
   };
@@ -26,19 +29,41 @@ const AuthPage = () => {
       preserveAspectRatio: "xMidYMid slice",
     },
   };
+  const checkAniOptions = {
+    loop: true,
+    autoplay: true,
+    animationData: animationDataCheck,
+    rendererSettings: {
+      preserveAspectRatio: "xMidYMid slice",
+    },
+  };
 
   return (
-    <Row className="login-page">
-      <Col span={12} className="login-col left">
-        <Lottie
-          style={{ marginTop: "100px" }}
-          options={defaultOptions}
-          height={"80%"}
-          width={"70%"}
-        />
+    <Row className={`login-page ${col ? "full" : ""}`}>
+      <Col span={12} className={`login-col left ${col ? "full" : ""}`}>
+        {!col ? (
+          <Lottie
+            style={{ marginTop: "100px" }}
+            options={defaultOptions}
+            height={"80%"}
+            width={"70%"}
+          />
+        ) : (
+          <Lottie
+            style={{ marginTop: "100px" }}
+            options={checkAniOptions}
+            height={"80%"}
+            width={"70%"}
+          />
+        )}
+
         <OTPModal visible={visible} setVisible={setVisible} />
       </Col>
-      <Col span={12} className="login-col right">
+      <Col
+        span={12}
+        // style={col ? { display: "none" } : {}}
+        className={`login-col right ${col ? "none" : ""}`}
+      >
         {" "}
         <Tabs
           className="login-tab__col"
@@ -47,7 +72,18 @@ const AuthPage = () => {
           onChange={(key: string) => handleChangeTab(key)}
         >
           <TabPane tab="Login" key="1">
-            <Login setActiveKey={setActiveKey} />
+            <Login setActiveKey={setActiveKey} setCol={setCol} />
+            {/* <Button
+              onClick={() => {
+                setCol(!col);
+                // setTimeout(() => {
+                //   setCol(false);
+                //   console.log("test");
+                // }, 1200);
+              }}
+            >
+              test
+            </Button> */}
           </TabPane>
           <TabPane tab="Register" key="2">
             <Register setVisible={setVisible} setActiveKey={setActiveKey} />

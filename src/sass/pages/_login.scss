@@ -4,12 +4,24 @@
   // background-color: #112a45;
   // color: white !important;
   // color: $blue-4;
+  &.full {
+    display: unset;
+  }
   .login-col {
     padding: "20px";
     display: flex;
     align-items: center;
+    transition: 1s;
     &.left {
       background-color: $blue-8;
+    }
+    &.full {
+      width: 100% !important;
+      max-width: 100% !important;
+      height: 100%;
+    }
+    &.none {
+      display: none !important;
     }
     .login-tab__col {
       width: 80%;

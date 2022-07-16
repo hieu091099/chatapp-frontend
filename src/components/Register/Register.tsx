@@ -39,6 +39,16 @@ const Register: React.FC<Props> = ({ setVisible, setActiveKey }) => {
         </div>
         <div>
           <Typography.Title level={5} style={{ marginBottom: "5px" }}>
+            Username
+          </Typography.Title>
+          <Input
+            // style={{ borderRadius: "5px" }}
+            placeholder="Your Full Name"
+            prefix={<UserOutlined />}
+          />
+        </div>
+        <div style={{ marginTop: "10px" }}>
+          <Typography.Title level={5} style={{ marginBottom: "5px" }}>
             Full Name
           </Typography.Title>
           <Input

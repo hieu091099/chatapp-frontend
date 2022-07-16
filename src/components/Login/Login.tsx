@@ -14,12 +14,14 @@ import OtpInput from "react-otp-input";
 import OTPModal from "../../components/OTPModal/OTPModal";
 
 interface Props {
+  setCol: React.Dispatch<React.SetStateAction<boolean>>;
   setActiveKey: React.Dispatch<React.SetStateAction<string>>;
 }
-const Login: React.FC<Props> = ({ setActiveKey }) => {
+const Login: React.FC<Props> = ({ setActiveKey, setCol }) => {
   const element = useRef<HTMLDivElement>(null);
   const [loading, setLoading] = useState(false);
   const handleLogin = () => {
+    setCol(true);
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
