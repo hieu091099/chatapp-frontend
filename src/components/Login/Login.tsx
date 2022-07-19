@@ -19,6 +19,10 @@ interface Props {
 }
 const Login: React.FC<Props> = ({ setActiveKey, setCol }) => {
   const element = useRef<HTMLDivElement>(null);
+  const [user, setUser] = useState<{ username: string; password: string }>({
+    username: "",
+    password: "",
+  });
   const [loading, setLoading] = useState(false);
   const handleLogin = () => {
     setCol(true);
@@ -41,12 +45,13 @@ const Login: React.FC<Props> = ({ setActiveKey, setCol }) => {
           </div>
           <div>
             <Typography.Title level={5} style={{ marginBottom: "5px" }}>
-              Email
+              Username
             </Typography.Title>
             <Input
               // style={{ borderRadius: "5px" }}
-              placeholder="Your Email"
-              prefix={<MailOutlined />}
+              placeholder="Your Username"
+              prefix={<UserOutlined />}
+              onChange={(e) => setUser({ ...user, username: e.target.value })}
             />
           </div>
           <div style={{ marginTop: "10px" }}>
@@ -60,6 +65,7 @@ const Login: React.FC<Props> = ({ setActiveKey, setCol }) => {
               iconRender={(visible) =>
                 visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
               }
+              onChange={(e) => setUser({ ...user, password: e.target.value })}
             />
           </div>
         </div>

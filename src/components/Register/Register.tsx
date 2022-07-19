@@ -11,19 +11,37 @@ import {
 } from "@ant-design/icons";
 import React, { useRef, useState } from "react";
 import { CheckboxChangeEvent } from "antd/lib/checkbox";
+import axios from "axios";
 
 interface Props {
   setVisible: React.Dispatch<React.SetStateAction<boolean>>;
   setActiveKey: React.Dispatch<React.SetStateAction<string>>;
 }
-
+interface User {
+  username: string;
+  password: string;
+  email: string;
+  displayName: string;
+}
 const Register: React.FC<Props> = ({ setVisible, setActiveKey }) => {
   const element = useRef<HTMLDivElement>(null);
-  //   const [visible, setVisible] = useState(false);
+  const [user, setUser] = useState<User>({
+    username: "",
+    password: "",
+    email: "",
+    displayName: "",
+  });
+  // console.log(user);
   const onChange = (e: CheckboxChangeEvent) => {
     console.log(`checked = ${e.target.checked}`);
   };
-  const handleLogin = () => {
+  const handleLogin = async () => {
+    const result = await axios({
+      method: "POST",
+      url: "http://192.168.18.172:8000/api/user/register",
+      data: user,
+    });
+    localStorage.setItem("user", JSON.stringify(result.data));
     setVisible(true);
   };
   return (
@@ -43,8 +61,9 @@ const Register: React.FC<Props> = ({ setVisible, setActiveKey }) => {
           </Typography.Title>
           <Input
             // style={{ borderRadius: "5px" }}
-            placeholder="Your Full Name"
+            placeholder="Your User Name"
             prefix={<UserOutlined />}
+            onChange={(e) => setUser({ ...user, username: e.target.value })}
           />
         </div>
         <div style={{ marginTop: "10px" }}>
@@ -55,6 +74,7 @@ const Register: React.FC<Props> = ({ setVisible, setActiveKey }) => {
             // style={{ borderRadius: "5px" }}
             placeholder="Your Full Name"
             prefix={<UserOutlined />}
+            onChange={(e) => setUser({ ...user, displayName: e.target.value })}
           />
         </div>
         <div style={{ marginTop: "10px" }}>
@@ -65,6 +85,7 @@ const Register: React.FC<Props> = ({ setVisible, setActiveKey }) => {
             // style={{ borderRadius: "5px" }}
             placeholder="Your Email"
             prefix={<MailOutlined />}
+            onChange={(e) => setUser({ ...user, email: e.target.value })}
           />
         </div>
         <div style={{ marginTop: "10px" }}>
@@ -78,6 +99,7 @@ const Register: React.FC<Props> = ({ setVisible, setActiveKey }) => {
             iconRender={(visible) =>
               visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
             }
+            onChange={(e) => setUser({ ...user, password: e.target.value })}
           />
         </div>
         <div style={{ marginTop: "10px" }}>
