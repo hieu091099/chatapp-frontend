@@ -9,12 +9,15 @@ import * as animationData from "../../assets/main.json";
 import * as animationDataCheck from "../../assets/check.json";
 
 import Lottie from "react-lottie";
+import { useNavigate } from "react-router-dom";
 const { TabPane } = Tabs;
 const AuthPage = () => {
   const element = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
   const [activeKey, setActiveKey] = useState<string>("1");
   const [col, setCol] = useState<boolean>(false);
+  const navigate = useNavigate();
+
   const handleLogin = () => {
     setVisible(true);
   };
@@ -37,7 +40,11 @@ const AuthPage = () => {
       preserveAspectRatio: "xMidYMid slice",
     },
   };
-
+  // let user = localStorage.getItem("accessToken");
+  // console.log({ user });
+  // if (user) {
+  //   navigate("/home");
+  // }
   return (
     <Row className={`login-page ${col ? "full" : ""}`}>
       <Col span={12} className={`login-col left ${col ? "full" : ""}`}>
@@ -57,7 +64,11 @@ const AuthPage = () => {
           />
         )}
 
-        <OTPModal visible={visible} setVisible={setVisible} />
+        <OTPModal
+          visible={visible}
+          setVisible={setVisible}
+          setActiveKey={setActiveKey}
+        />
       </Col>
       <Col
         span={12}
@@ -72,7 +83,11 @@ const AuthPage = () => {
           onChange={(key: string) => handleChangeTab(key)}
         >
           <TabPane tab="Login" key="1">
-            <Login setActiveKey={setActiveKey} setCol={setCol} />
+            <Login
+              activeKey={activeKey}
+              setActiveKey={setActiveKey}
+              setCol={setCol}
+            />
             {/* <Button
               onClick={() => {
                 setCol(!col);
@@ -86,7 +101,11 @@ const AuthPage = () => {
             </Button> */}
           </TabPane>
           <TabPane tab="Register" key="2">
-            <Register setVisible={setVisible} setActiveKey={setActiveKey} />
+            <Register
+              activeKey={activeKey}
+              setVisible={setVisible}
+              setActiveKey={setActiveKey}
+            />
           </TabPane>
         </Tabs>
       </Col>

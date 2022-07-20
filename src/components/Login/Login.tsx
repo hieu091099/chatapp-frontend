@@ -1,4 +1,13 @@
-import { Button, Col, Input, Row, Spin, Tabs, Typography } from "antd";
+import {
+  Button,
+  Col,
+  Input,
+  notification,
+  Row,
+  Spin,
+  Tabs,
+  Typography,
+} from "antd";
 import {
   UserOutlined,
   MailOutlined,
@@ -12,25 +21,52 @@ import {
 import React, { useEffect, useRef, useState } from "react";
 import OtpInput from "react-otp-input";
 import OTPModal from "../../components/OTPModal/OTPModal";
+import axios from "axios";
+import { instance } from "../../utils/config";
+import { useNavigate } from "react-router-dom";
 
 interface Props {
+  activeKey: string;
   setCol: React.Dispatch<React.SetStateAction<boolean>>;
   setActiveKey: React.Dispatch<React.SetStateAction<string>>;
 }
-const Login: React.FC<Props> = ({ setActiveKey, setCol }) => {
+const Login: React.FC<Props> = ({ activeKey, setActiveKey, setCol }) => {
   const element = useRef<HTMLDivElement>(null);
   const [user, setUser] = useState<{ username: string; password: string }>({
     username: "",
     password: "",
   });
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  const handleLogin = () => {
-    setCol(true);
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-    }, 3000);
+  const handleLogin = async () => {
+    const result = await instance.post("/user/login", user);
+    if (result.data.authenticated == true) {
+      setCol(true);
+      setLoading(true);
+      setTimeout(() => {
+        setLoading(false);
+        navigate("/");
+      }, 1500);
+    } else {
+      notification["error"]({
+        message: "Notification",
+        description: result.data.message,
+        duration: 1,
+      });
+    }
+    localStorage.setItem("user", JSON.stringify(result.data.user));
+    localStorage.setItem(
+      "accessToken",
+      JSON.stringify(result.data.accessToken)
+    );
+    localStorage.setItem(
+      "refreshToken",
+      JSON.stringify(result.data.refreshToken)
+    );
   };
+  useEffect(() => {
+    setUser({ username: "", password: "" });
+  }, [activeKey]);
   return (
     <Spin spinning={loading} tip="Loading...">
       <div className="form__login">
@@ -49,6 +85,7 @@ const Login: React.FC<Props> = ({ setActiveKey, setCol }) => {
             </Typography.Title>
             <Input
               // style={{ borderRadius: "5px" }}
+              value={user.username}
               placeholder="Your Username"
               prefix={<UserOutlined />}
               onChange={(e) => setUser({ ...user, username: e.target.value })}
@@ -60,6 +97,7 @@ const Login: React.FC<Props> = ({ setActiveKey, setCol }) => {
             </Typography.Title>
             <Input.Password
               // style={{ borderRadius: "5px" }}
+              value={user.password}
               placeholder="Your Password"
               prefix={<KeyOutlined />}
               iconRender={(visible) =>

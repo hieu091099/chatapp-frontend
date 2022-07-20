@@ -4,13 +4,15 @@ import React, { useState } from "react";
 import { useEffect } from "react";
 import OtpInput from "react-otp-input";
 import { SmileOutlined, CheckCircleOutlined } from "@ant-design/icons";
+import { instance } from "../../utils/config";
 
 interface Props {
   visible: any;
   setVisible: React.Dispatch<React.SetStateAction<boolean>>;
+  setActiveKey: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const OTPModal: React.FC<Props> = ({ visible, setVisible }) => {
+const OTPModal: React.FC<Props> = ({ visible, setVisible, setActiveKey }) => {
   const [loading, setLoading] = useState(false);
   const [otp, setOtp] = useState<string>("");
   const [isError, setIsError] = useState<boolean>(false);
@@ -35,10 +37,9 @@ const OTPModal: React.FC<Props> = ({ visible, setVisible }) => {
     let user: any = localStorage.getItem("user");
     let userParse: any = JSON.parse(user);
 
-    const result = await axios({
-      method: "GET",
-      url: `http://192.168.18.172:8000/api/user/active/${userParse.orthers.id}/${otp}`,
-    });
+    const result = await instance.get(
+      `/user/active/${userParse.orthers.id}/${otp}`
+    );
     if (result.data.authenticated == true) {
       return true;
     } else {
@@ -63,6 +64,7 @@ const OTPModal: React.FC<Props> = ({ visible, setVisible }) => {
             description: "Verify Success!",
           });
           setVisible(false);
+          setActiveKey("1");
         } else {
           setLoading(false);
           notification["error"]({

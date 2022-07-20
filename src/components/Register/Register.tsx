@@ -9,11 +9,12 @@ import {
   GoogleOutlined,
   FacebookOutlined,
 } from "@ant-design/icons";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { CheckboxChangeEvent } from "antd/lib/checkbox";
 import axios from "axios";
 
 interface Props {
+  activeKey: string;
   setVisible: React.Dispatch<React.SetStateAction<boolean>>;
   setActiveKey: React.Dispatch<React.SetStateAction<string>>;
 }
@@ -23,7 +24,7 @@ interface User {
   email: string;
   displayName: string;
 }
-const Register: React.FC<Props> = ({ setVisible, setActiveKey }) => {
+const Register: React.FC<Props> = ({ setVisible, activeKey, setActiveKey }) => {
   const element = useRef<HTMLDivElement>(null);
   const [user, setUser] = useState<User>({
     username: "",
@@ -44,6 +45,14 @@ const Register: React.FC<Props> = ({ setVisible, setActiveKey }) => {
     localStorage.setItem("user", JSON.stringify(result.data));
     setVisible(true);
   };
+  useEffect(() => {
+    setUser({
+      username: "",
+      password: "",
+      email: "",
+      displayName: "",
+    });
+  }, [activeKey]);
   return (
     <div className="form__login">
       <div className="form__login-content">
@@ -61,6 +70,7 @@ const Register: React.FC<Props> = ({ setVisible, setActiveKey }) => {
           </Typography.Title>
           <Input
             // style={{ borderRadius: "5px" }}
+            value={user.username}
             placeholder="Your User Name"
             prefix={<UserOutlined />}
             onChange={(e) => setUser({ ...user, username: e.target.value })}
@@ -72,6 +82,7 @@ const Register: React.FC<Props> = ({ setVisible, setActiveKey }) => {
           </Typography.Title>
           <Input
             // style={{ borderRadius: "5px" }}
+            value={user.displayName}
             placeholder="Your Full Name"
             prefix={<UserOutlined />}
             onChange={(e) => setUser({ ...user, displayName: e.target.value })}
@@ -83,6 +94,7 @@ const Register: React.FC<Props> = ({ setVisible, setActiveKey }) => {
           </Typography.Title>
           <Input
             // style={{ borderRadius: "5px" }}
+            value={user.email}
             placeholder="Your Email"
             prefix={<MailOutlined />}
             onChange={(e) => setUser({ ...user, email: e.target.value })}
@@ -94,6 +106,7 @@ const Register: React.FC<Props> = ({ setVisible, setActiveKey }) => {
           </Typography.Title>
           <Input.Password
             // style={{ borderRadius: "5px" }}
+            value={user.password}
             placeholder="Your Password"
             prefix={<KeyOutlined />}
             iconRender={(visible) =>
@@ -108,6 +121,7 @@ const Register: React.FC<Props> = ({ setVisible, setActiveKey }) => {
           </Typography.Title>
           <Input.Password
             // style={{ borderRadius: "5px" }}
+            // value={user.}
             placeholder="Confirm Your Password"
             prefix={<KeyOutlined />}
             iconRender={(visible) =>
