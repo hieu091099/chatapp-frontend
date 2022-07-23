@@ -35,6 +35,10 @@ const ListContact = () => {
         </div>
         <div className="list-messages">
           <PersonalMessage />
+          <PersonalMessage />
+          <PersonalMessage />
+          <PersonalMessage />
+          <PersonalMessage />
         </div>
       </div>
       <div className="list-contact__messages group">
@@ -47,7 +51,11 @@ const ListContact = () => {
             Groups
           </Typography.Text>
         </div>
-        <div className="list-group"></div>
+        <div className="list-messages">
+          <PersonalMessage />
+          <PersonalMessage />
+          <PersonalMessage />
+        </div>
       </div>
     </div>
   );
