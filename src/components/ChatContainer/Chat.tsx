@@ -1,25 +1,48 @@
-import { Input } from "antd";
+import { Input, Spin } from "antd";
 import { UserOutlined } from "@ant-design/icons";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaImage } from "react-icons/fa";
 import { BsEmojiSmile, BsFillMicFill } from "react-icons/bs";
 import { FiSend } from "react-icons/fi";
 import Message from "../Message/Message";
-type Props = {};
+interface Props {
+  chooseConversation: number | undefined;
+}
 
-const Chat = (props: Props) => {
+const Chat: React.FC<Props> = ({ chooseConversation }) => {
   const [isFriend, setIsFriend] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [message, setMessage] = useState<string>("");
+  useEffect(() => {
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+  }, [chooseConversation]);
+  const sendMessage = () => {
+    console.log("test");
+  };
   return (
     <div className="chat-wrapper">
-      <div className="chat-content">
-        <Message isFriend={true} />
-        <Message isFriend={false} />
+      {loading ? (
+        <div className="chat-content" style={{ justifyContent: "center" }}>
+          <Spin size="large" />
+        </div>
+      ) : (
+        <div className="chat-content">
+          <Message isFriend={true} />
+          <Message isFriend={false} />
 
-        {/* <Message isFriend={false} /> */}
-      </div>
+          {/* <Message isFriend={false} /> */}
+        </div>
+      )}
       <div className="input-chat">
         <Input
           className="input-custom"
+          onChange={(e) => {
+            setMessage(e.target.value);
+          }}
+          onPressEnter={() => sendMessage()}
           size="large"
           placeholder="Add a comment..."
           addonAfter={

@@ -1,18 +1,23 @@
 import React from "react";
-
-const PersonalMessage = () => {
+import { User } from "../../../models/model";
+interface Props {
+  user: User;
+  setChooseConversation: React.Dispatch<
+    React.SetStateAction<number | undefined>
+  >;
+}
+const PersonalMessage: React.FC<Props> = ({ user, setChooseConversation }) => {
   return (
-    <div className="personal-message">
+    <div
+      className="personal-message"
+      onClick={() => setChooseConversation(user.id)}
+    >
       <div className="personal-message__left">
         <div className="person-avatar">
-          <img
-            className="avatar"
-            src="https://luv.vn/wp-content/uploads/2021/11/avatar-gai-xinh-30.jpg"
-            alt=""
-          />
+          <img className="avatar" src={user.avatarPath} alt="" />
         </div>
         <div className="personal-info">
-          <div className="name">Stephen Curry</div>
+          <div className="name">{user.displayName}</div>
           <div className="last-message">Callback hell</div>
         </div>
       </div>

@@ -9,7 +9,11 @@ import {
 } from "@ant-design/icons";
 import { IoIosPeople } from "react-icons/io";
 import img from "../../assets/avatar/avatar.jpg";
+import { User } from "../../models/model";
+
 const LeftSideBar = () => {
+  let user: User = JSON.parse(localStorage.getItem("user") || "{}");
+  console.log(user);
   const [isActive, setIsActive] = useState(1);
   const logout = () => {
     localStorage.removeItem("accessToken");
@@ -69,7 +73,7 @@ const LeftSideBar = () => {
         <div className="slide"></div>
       </div>
       <div className="left-sidebar__bottom">
-        <img className="sidebar-avatar" src={img} alt="" />
+        <img className="sidebar-avatar" src={user.avatarPath} alt="" />
       </div>
     </div>
   );

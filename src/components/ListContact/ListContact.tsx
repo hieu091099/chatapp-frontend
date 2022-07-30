@@ -1,10 +1,45 @@
 import { Input, Typography } from "antd";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { UserOutlined, SearchOutlined } from "@ant-design/icons";
 import { BiMessageRoundedDetail } from "react-icons/bi";
 import { BsFillPeopleFill } from "react-icons/bs";
 import PersonalMessage from "./PersonalMessage/PersonalMessage";
-const ListContact = () => {
+import axios from "axios";
+import { BASE_URL } from "../../utils/config";
+interface Props {
+  setChooseConversation: React.Dispatch<
+    React.SetStateAction<number | undefined>
+  >;
+}
+const ListContact: React.FC<Props> = ({ setChooseConversation }) => {
+  const [friend, setFriend] = useState<[]>([]);
+  const getAllUser = async () => {
+    let accessToken: string = JSON.parse(
+      localStorage.getItem("accessToken") || ""
+    );
+    console.log(accessToken);
+    let result = await axios({
+      method: "GET",
+      url: BASE_URL + "/user/getAllUser",
+      headers: {
+        "x-access-token": accessToken,
+      },
+    });
+    setFriend(result.data.user);
+  };
+  useEffect(() => {
+    getAllUser();
+  }, []);
+  const renderFriend = () => {
+    return friend.map((item, index) => {
+      return (
+        <PersonalMessage
+          user={item}
+          setChooseConversation={setChooseConversation}
+        />
+      );
+    });
+  };
   return (
     <div className="list-contact">
       <div className="list-contact__title">
@@ -33,13 +68,7 @@ const ListContact = () => {
             All Messages
           </Typography.Text>
         </div>
-        <div className="list-messages">
-          <PersonalMessage />
-          <PersonalMessage />
-          <PersonalMessage />
-          <PersonalMessage />
-          <PersonalMessage />
-        </div>
+        <div className="list-messages">{renderFriend()}</div>
       </div>
       <div className="list-contact__messages group">
         <div className="title">
@@ -52,9 +81,9 @@ const ListContact = () => {
           </Typography.Text>
         </div>
         <div className="list-messages">
+          {/* <PersonalMessage />
           <PersonalMessage />
-          <PersonalMessage />
-          <PersonalMessage />
+          <PersonalMessage /> */}
         </div>
       </div>
     </div>
