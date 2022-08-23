@@ -54,7 +54,6 @@ const Login: React.FC<Props> = ({ activeKey, setActiveKey, setCol }) => {
         duration: 1,
       });
     }
-    console.log(result.data.user);
     localStorage.setItem("user", JSON.stringify(result.data.user));
     localStorage.setItem(
       "accessToken",

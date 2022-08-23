@@ -17,7 +17,6 @@ const ListContact: React.FC<Props> = ({ setChooseConversation }) => {
     let accessToken: string = JSON.parse(
       localStorage.getItem("accessToken") || ""
     );
-    console.log(accessToken);
     let result = await axios({
       method: "GET",
       url: BASE_URL + "/user/getAllUser",
