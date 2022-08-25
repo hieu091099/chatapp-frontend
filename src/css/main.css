@@ -22,6 +22,26 @@ body,
   font-family: "SF Regular";
   src: url("../assets/fonts/SF-UI-Display-Regular.otf");
 }
+/* width */
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1 !important;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #082032 !important;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555 !important;
+}
+
 .input-otp {
   width: 50px !important;
   height: 50px;
@@ -276,6 +296,7 @@ body,
 }
 .chat-wrapper .chat-content {
   height: 90%;
+  max-height: 750px;
   width: 100%;
   padding: 10px;
   display: -webkit-box;
@@ -285,6 +306,23 @@ body,
   -webkit-box-direction: reverse;
       -ms-flex-direction: column-reverse;
           flex-direction: column-reverse;
+  overflow: auto;
+  /* width */
+  /* Track */
+  /* Handle */
+  /* Handle on hover */
+}
+.chat-wrapper .chat-content ::-webkit-scrollbar {
+  width: 10px;
+}
+.chat-wrapper .chat-content ::-webkit-scrollbar-track {
+  background: #f1f1f1 !important;
+}
+.chat-wrapper .chat-content ::-webkit-scrollbar-thumb {
+  background: #888 !important;
+}
+.chat-wrapper .chat-content ::-webkit-scrollbar-thumb:hover {
+  background: #555 !important;
 }
 .chat-wrapper .chat-content .message-item {
   display: -webkit-box;

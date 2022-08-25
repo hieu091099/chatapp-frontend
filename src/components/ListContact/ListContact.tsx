@@ -13,13 +13,14 @@ interface Props {
 }
 const ListContact: React.FC<Props> = ({ setChooseConversation }) => {
   const [friend, setFriend] = useState<[]>([]);
-  const getAllUser = async () => {
+  const getAllFriend = async () => {
     let accessToken: string = JSON.parse(
       localStorage.getItem("accessToken") || ""
     );
+    let user = JSON.parse(localStorage.getItem("user") || "{}");
     let result = await axios({
       method: "GET",
-      url: BASE_URL + "/user/getAllUser",
+      url: `${BASE_URL}/user/getFriendByUserId/${user.id}`,
       headers: {
         "x-access-token": accessToken,
       },
@@ -27,12 +28,13 @@ const ListContact: React.FC<Props> = ({ setChooseConversation }) => {
     setFriend(result.data.user);
   };
   useEffect(() => {
-    getAllUser();
+    getAllFriend();
   }, []);
   const renderFriend = () => {
     return friend.map((item, index) => {
       return (
         <PersonalMessage
+          key={index}
           user={item}
           setChooseConversation={setChooseConversation}
         />

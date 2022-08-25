@@ -1,4 +1,5 @@
 import axios from "axios";
+import jwt_decode from "jwt-decode";
 
 export const BASE_URL: string = "http://192.168.18.172:3030/api";
 
@@ -13,7 +14,28 @@ export const instanceToken = async (
   accessToken: string,
   data: object | any
 ) => {
-  const instance = axios.create({
+  let isExp = false;
+
+  if (accessToken) {
+    const decoded: any = jwt_decode(accessToken);
+    const current_time = new Date().getTime() / 1000;
+    if (current_time >= decoded.exp) {
+      try {
+        const body = {
+          accessToken,
+          refreshToken: localStorage.refreshToken,
+        };
+
+        const res = await instance.post(BASE_URL + "auth/refresh", body);
+
+        localStorage.accessToken = res.data.accessToken;
+        isExp = true;
+      } catch (err) {
+        console.log("Error decoded", err);
+      }
+    }
+  }
+  const instanceAxios = axios.create({
     baseURL: BASE_URL,
     timeout: 5000,
     headers: {
@@ -24,21 +46,21 @@ export const instanceToken = async (
 
   if (method == "GET") {
     try {
-      return await instance.get(url);
+      return await instanceAxios.get(url);
     } catch (error) {
       // console.log(error);
     }
   }
   if (method == "POST") {
     try {
-      return await instance.post(url, data);
+      return await instanceAxios.post(url, data);
     } catch (error) {
       // console.log(error);
     }
   }
   if (method == "PUT") {
     try {
-      return await instance.put(url, data);
+      return await instanceAxios.put(url, data);
     } catch (error) {
       // console.log(error);
     }
@@ -46,7 +68,7 @@ export const instanceToken = async (
 
   if (method == "DELETE") {
     try {
-      return await instance.delete(url);
+      return await instanceAxios.delete(url);
     } catch (error) {
       // console.log(error);
     }
