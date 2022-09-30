@@ -24,6 +24,9 @@ import OTPModal from "../../components/OTPModal/OTPModal";
 import axios from "axios";
 import { instance } from "../../utils/config";
 import { useNavigate } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "./../../redux/hooks";
+import { userSelector } from "../../redux/features/user/userSlice";
+import { login } from "./../../redux/features/user/userAPI";
 
 interface Props {
   activeKey: string;
@@ -36,34 +39,46 @@ const Login: React.FC<Props> = ({ activeKey, setActiveKey, setCol }) => {
     username: "",
     password: "",
   });
+  const dispatch = useAppDispatch();
+  const { userCurrent, isLoggedIn, errorLogin } = useAppSelector(userSelector);
+  console.log({ isLoggedIn });
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const handleLogin = async () => {
-    const result = await instance.post("/user/login", user);
-    if (result.data.authenticated == true) {
-      setCol(true);
-      setLoading(true);
-      setTimeout(() => {
-        setLoading(false);
-        navigate("/");
-      }, 1500);
-    } else {
-      notification["error"]({
-        message: "Notification",
-        description: result.data.message,
-        duration: 1,
-      });
-    }
-    localStorage.setItem("user", JSON.stringify(result.data.user));
-    localStorage.setItem(
-      "accessToken",
-      JSON.stringify(result.data.accessToken)
-    );
-    localStorage.setItem(
-      "refreshToken",
-      JSON.stringify(result.data.refreshToken)
-    );
+    // const result = await instance.post("/user/login", user);
+    // if (result.data.authenticated == true) {
+    //   setCol(true);
+    //   setLoading(true);
+    //   setTimeout(() => {
+    //     setLoading(false);
+    //     navigate("/");
+    //   }, 1500);
+    // } else {
+    //   notification["error"]({
+    //     message: "Notification",
+    //     description: result.data.message,
+    //     duration: 1,
+    //   });
+    // }
+    // localStorage.setItem("user", JSON.stringify(result.data.user));
+    // localStorage.setItem(
+    //   "accessToken",
+    //   JSON.stringify(result.data.accessToken)
+    // );
+    // localStorage.setItem(
+    //   "refreshToken",
+    //   JSON.stringify(result.data.refreshToken)
+    // );
+    dispatch(login(user));
+    setCol(true);
+    setTimeout(() => {
+      setLoading(false);
+      navigate("/");
+    }, 1500);
   };
+  useEffect(() => {
+    console.log("object");
+  }, [dispatch]);
   useEffect(() => {
     setUser({ username: "", password: "" });
   }, [activeKey]);

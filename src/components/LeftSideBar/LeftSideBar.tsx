@@ -13,7 +13,7 @@ import { User } from "../../models/model";
 
 const LeftSideBar = () => {
   let user: User = JSON.parse(localStorage.getItem("user") || "{}");
-  console.log(user);
+  // console.log(user);
   const [isActive, setIsActive] = useState(1);
   const logout = () => {
     localStorage.removeItem("accessToken");

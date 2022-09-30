@@ -50,8 +50,10 @@
           .person-avatar {
             margin-right: 15px;
             .avatar {
-              width: 50px;
+              width: 150px;
               height: 50px;
+              object-fit: cover;
+              object-position: 50% 50%;
               border-radius: 50%;
             }
           }

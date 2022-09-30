@@ -1,5 +1,8 @@
 import React from "react";
 import { User } from "../../../models/model";
+import { useAppSelector,useAppDispatch } from "../../../redux/hooks";
+import { increment, incrementAsync, incrementByAmount, selectCount } from './../../../redux/features/counter/counterSlice';
+
 interface Props {
   user: User;
   setChooseConversation: React.Dispatch<
@@ -7,18 +10,21 @@ interface Props {
   >;
 }
 const PersonalMessage: React.FC<Props> = ({ user, setChooseConversation }) => {
+  const count = useAppSelector(selectCount);
+  const dispatch = useAppDispatch();
   return (
     <div
       className="personal-message"
       onClick={() => setChooseConversation(user.id)}
+      
     >
       <div className="personal-message__left">
         <div className="person-avatar">
-          <img className="avatar" src={user.avatarPath} alt="" />
+          <img className="avatar"  src={user.avatarPath} alt="" />
         </div>
         <div className="personal-info">
           <div className="name">{user.displayName}</div>
-          <div className="last-message">Callback hell</div>
+          <div className="last-message">Callback hell </div>
         </div>
       </div>
       <div className="personal-message__right">

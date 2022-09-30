@@ -8,7 +8,7 @@ import RightSideBar from "../../components/RightSideBar/RightSideBar";
 
 const Home = () => {
   const [chooseConversation, setChooseConversation] = useState<number>();
-  console.log({ chooseConversation });
+  // console.log({ chooseConversation });
   return (
     <Row style={{ backgroundColor: "#212329", height: "100%", width: "100%" }}>
       <Col md={2} lg={2} xl={1}>
