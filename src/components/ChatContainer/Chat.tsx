@@ -56,6 +56,11 @@ const Chat: React.FC<Props> = ({ chooseConversation }) => {
       },
     });
     if (result.status == 200) {
+      socket.current.emit("sendMessages", {
+        senderId: user.id,
+        receiveId: chooseConversation,
+        content: message,
+      });
       setCountSendSuccess(countSendSuccess + 1);
       setMessage("");
       setLoading(false);

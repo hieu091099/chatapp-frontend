@@ -41,47 +41,34 @@ const Login: React.FC<Props> = ({ activeKey, setActiveKey, setCol }) => {
   });
   const dispatch = useAppDispatch();
   const { userCurrent, isLoggedIn, errorLogin } = useAppSelector(userSelector);
-  console.log({ isLoggedIn });
+  console.log({ userCurrent });
+  const [changeStateLogin, setChangeStateLogin] = useState<number>(0);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const handleLogin = async () => {
-    // const result = await instance.post("/user/login", user);
-    // if (result.data.authenticated == true) {
-    //   setCol(true);
-    //   setLoading(true);
-    //   setTimeout(() => {
-    //     setLoading(false);
-    //     navigate("/");
-    //   }, 1500);
-    // } else {
-    //   notification["error"]({
-    //     message: "Notification",
-    //     description: result.data.message,
-    //     duration: 1,
-    //   });
-    // }
-    // localStorage.setItem("user", JSON.stringify(result.data.user));
-    // localStorage.setItem(
-    //   "accessToken",
-    //   JSON.stringify(result.data.accessToken)
-    // );
-    // localStorage.setItem(
-    //   "refreshToken",
-    //   JSON.stringify(result.data.refreshToken)
-    // );
+    setChangeStateLogin(changeStateLogin + 1);
     dispatch(login(user));
-    setCol(true);
-    setTimeout(() => {
-      setLoading(false);
-      navigate("/");
-    }, 1500);
   };
+
   useEffect(() => {
-    console.log("object");
-  }, [dispatch]);
+    if (isLoggedIn) {
+      setCol(true);
+      setTimeout(() => {
+        setLoading(false);
+        navigate("/");
+      }, 1000);
+    } else if (!isLoggedIn && errorLogin != "") {
+      notification["error"]({
+        message: "Notification",
+        description: errorLogin,
+        duration: 1,
+      });
+    }
+  }, [errorLogin, isLoggedIn]);
   useEffect(() => {
     setUser({ username: "", password: "" });
   }, [activeKey]);
+
   return (
     <Spin spinning={loading} tip="Loading...">
       <div className="form__login">

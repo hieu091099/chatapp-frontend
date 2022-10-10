@@ -15,8 +15,8 @@ export const login = (user: any): AppThunk => {
       const result = await instance.post("/user/login", user);
       if (result.data.authenticated == true) {
         setTimeout(() => {
-          setLoginLoading(false);
-          setLoggedIn(true);
+          dispatch(setLoginLoading(false));
+          dispatch(setLoggedIn(true));
         }, 1500);
         setCurrentUser(result.data.user);
         localStorage.setItem("user", JSON.stringify(result.data.user));
