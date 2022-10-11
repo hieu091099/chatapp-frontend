@@ -49,7 +49,12 @@ const Login: React.FC<Props> = ({ activeKey, setActiveKey, setCol }) => {
     setChangeStateLogin(changeStateLogin + 1);
     dispatch(login(user));
   };
-
+  const handleKeyDown = (e:React.KeyboardEvent<HTMLInputElement>) => {
+    if(e.key == 'Enter'){
+      setChangeStateLogin(changeStateLogin + 1);
+      dispatch(login(user));
+    }
+  }
   useEffect(() => {
     if (isLoggedIn) {
       setCol(true);
@@ -105,6 +110,7 @@ const Login: React.FC<Props> = ({ activeKey, setActiveKey, setCol }) => {
               iconRender={(visible) =>
                 visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
               }
+              onKeyDown={handleKeyDown}
               onChange={(e) => setUser({ ...user, password: e.target.value })}
             />
           </div>

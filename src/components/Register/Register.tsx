@@ -39,7 +39,7 @@ const Register: React.FC<Props> = ({ setVisible, activeKey, setActiveKey }) => {
   const handleLogin = async () => {
     const result = await axios({
       method: "POST",
-      url: "http://192.168.18.172:3030/api/user/register",
+      url: "http://localhost:3030/api/user/register",
       data: user,
     });
     localStorage.setItem("user", JSON.stringify(result.data));
