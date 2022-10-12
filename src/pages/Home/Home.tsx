@@ -14,7 +14,7 @@ const Home = () => {
       <Col md={2} lg={2} xl={1}>
         <LeftSideBar />
       </Col>
-      <Col md={7} lg={6} xl={5}>
+      <Col md={7} lg={6} xl={5} style={{ backgroundColor: "#212329" }}>
         <ListContact setChooseConversation={setChooseConversation} />
       </Col>
       <Col md={10} lg={10} xl={12}>

@@ -4,14 +4,12 @@
   color: white;
 
   .chat-content {
-    height: 90%;
-    max-height: 750px;
+    height: 80vh;
     width: 100%;
     padding: 10px;
     display: flex;
     flex-direction: column-reverse;
     overflow: auto;
-
     .message-item {
       display: flex;
       width: 100%;
@@ -82,7 +80,7 @@
     }
   }
   .input-chat {
-    height: 10%;
+    height: 82px;
     width: 99%;
     margin: 0 auto;
     padding: 0 20px;
