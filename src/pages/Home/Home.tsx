@@ -15,7 +15,6 @@ import {
 import { useAppSelector } from "../../redux/hooks";
 import { useAppDispatch } from "./../../redux/hooks";
 const Home = () => {
-  const [chooseConversation, setChooseConversation] = useState<number>();
   const { userCurrent, usersOnline } = useAppSelector(userSelector);
   const socket: any = useRef();
   let user = JSON.parse(localStorage.getItem("user") || "");
@@ -28,7 +27,6 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-    console.log("first");
     socket.current = io("ws://localhost:8900");
     if (userCurrent) {
       socket.current.emit("addUser", userCurrent.id);
@@ -49,7 +47,7 @@ const Home = () => {
         <div style={{ backgroundColor: "#131517" }}>
           <HeaderBar />
         </div>
-        <Chat chooseConversation={chooseConversation} />
+        <Chat />
       </Col>
       <Col md={5} lg={6} xl={6}>
         <RightSideBar />

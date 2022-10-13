@@ -8,7 +8,6 @@ type Props = {};
 const HeaderBar = (props: Props) => {
   const { userCurrent, chatCurrent, usersOnline } =
     useAppSelector(userSelector);
-  console.log(usersOnline);
   const checkIsOnline = (): Boolean => {
     let check = usersOnline.findIndex((i) => i.userId == chatCurrent.id);
     if (check != -1) {

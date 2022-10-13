@@ -9,14 +9,15 @@ import axios from "axios";
 import { BASE_URL } from "../../utils/config";
 import { MessageM } from "../../models/model";
 import { io } from "socket.io-client";
-interface Props {
-  chooseConversation: number | undefined;
-}
+import { useAppSelector } from "../../redux/hooks";
+import { userSelector } from "../../redux/features/user/userSlice";
 
-const Chat: React.FC<Props> = ({ chooseConversation }) => {
+const Chat: React.FC = () => {
   const [isFriend, setIsFriend] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
+  const { chatCurrent } = useAppSelector(userSelector);
+  const [arrivalMessage, setArrivalMessage] = useState<any>({});
   const [countSendSuccess, setCountSendSuccess] = useState<number>(0);
   const [listMessage, setListMessage] = useState<MessageM[]>([]);
   const socket: any = useRef();
@@ -24,17 +25,28 @@ const Chat: React.FC<Props> = ({ chooseConversation }) => {
     getMessages().then((res) => {
       setListMessage(res);
     });
-  }, [chooseConversation, countSendSuccess]);
-
+  }, [chatCurrent.id, countSendSuccess]);
+  console.log("test", arrivalMessage);
   useEffect(() => {
     socket.current = io("ws://localhost:8900");
+    socket.current.on(
+      "getMessage",
+      (data: { senderId: number; receiveId: number; content: string }) => {
+        console.log({ data });
+        setArrivalMessage({
+          senderId: data.senderId,
+          content: data.content,
+          createdAt: Date.now(),
+        });
+      }
+    );
   }, []);
 
   const getMessages = async () => {
     let user = JSON.parse(localStorage.getItem("user") || "{}");
     let result = await axios({
       method: "GET",
-      url: `${BASE_URL}/message/getMessages/${user.id}/${chooseConversation}`,
+      url: `${BASE_URL}/message/getMessages/${user.id}/${chatCurrent.id}`,
     });
     // console.log(result.data);
     return result.data;
@@ -43,6 +55,12 @@ const Chat: React.FC<Props> = ({ chooseConversation }) => {
     let user = JSON.parse(localStorage.getItem("user") || "{}");
     let accessToken = JSON.parse(localStorage.getItem("accessToken") || "");
     setLoading(true);
+
+    socket.current.emit("sendMessage", {
+      senderId: user.id,
+      receiveId: chatCurrent.id,
+      content: message,
+    });
     let result = await axios({
       method: "POST",
       url: BASE_URL + "/message/sendMessage",
@@ -51,16 +69,11 @@ const Chat: React.FC<Props> = ({ chooseConversation }) => {
       },
       data: {
         senderId: user.id,
-        receiveId: chooseConversation,
+        receiveId: chatCurrent.id,
         content: message,
       },
     });
     if (result.status == 200) {
-      socket.current.emit("sendMessages", {
-        senderId: user.id,
-        receiveId: chooseConversation,
-        content: message,
-      });
       setCountSendSuccess(countSendSuccess + 1);
       setMessage("");
       setLoading(false);
