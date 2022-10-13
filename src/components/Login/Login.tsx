@@ -41,7 +41,6 @@ const Login: React.FC<Props> = ({ activeKey, setActiveKey, setCol }) => {
   });
   const dispatch = useAppDispatch();
   const { userCurrent, isLoggedIn, errorLogin } = useAppSelector(userSelector);
-  console.log({ userCurrent });
   const [changeStateLogin, setChangeStateLogin] = useState<number>(0);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -49,12 +48,12 @@ const Login: React.FC<Props> = ({ activeKey, setActiveKey, setCol }) => {
     setChangeStateLogin(changeStateLogin + 1);
     dispatch(login(user));
   };
-  const handleKeyDown = (e:React.KeyboardEvent<HTMLInputElement>) => {
-    if(e.key == 'Enter'){
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key == "Enter") {
       setChangeStateLogin(changeStateLogin + 1);
       dispatch(login(user));
     }
-  }
+  };
   useEffect(() => {
     if (isLoggedIn) {
       setCol(true);

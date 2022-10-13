@@ -18,7 +18,7 @@ export const login = (user: any): AppThunk => {
           dispatch(setLoginLoading(false));
           dispatch(setLoggedIn(true));
         }, 1500);
-        setCurrentUser(result.data.user);
+        dispatch(setCurrentUser(result.data.user));
         localStorage.setItem("user", JSON.stringify(result.data.user));
         localStorage.setItem(
           "accessToken",

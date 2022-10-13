@@ -11,6 +11,20 @@ export interface UserState {
     isAdmin: any;
     status: boolean;
   };
+  chatCurrent: {
+    id: number;
+    email: string;
+    avatarPath: string;
+    displayName: string;
+    isAdmin: any;
+    status: boolean;
+  };
+  usersOnline: [
+    {
+      userId: number;
+      socketId: string;
+    }
+  ];
   isLoggedIn: boolean;
   isLoginLoading: boolean;
   errorLogin: string;
@@ -25,6 +39,20 @@ const initialState: UserState = {
     isAdmin: "",
     status: false,
   },
+  chatCurrent: {
+    id: 0,
+    email: "",
+    avatarPath: "",
+    displayName: "",
+    isAdmin: "",
+    status: false,
+  },
+  usersOnline: [
+    {
+      userId: -1,
+      socketId: "",
+    },
+  ],
   isLoggedIn: false,
   isLoginLoading: false,
   errorLogin: "",
@@ -36,6 +64,15 @@ export const userSlice = createSlice({
   reducers: {
     setCurrentUser: (state, { payload }: PayloadAction<User>) => {
       state.userCurrent = payload;
+    },
+    setUserOnline: (
+      state,
+      { payload }: PayloadAction<[{ userId: number; socketId: string }]>
+    ) => {
+      state.usersOnline = payload;
+    },
+    setChatCurrent: (state, { payload }: PayloadAction<User>) => {
+      state.chatCurrent = payload;
     },
     setLoginLoading: (state, { payload }: PayloadAction<boolean>) => {
       state.isLoginLoading = payload;
@@ -52,8 +89,14 @@ export const userSlice = createSlice({
   },
 });
 
-export const { setCurrentUser, setLoginLoading, setLoginError, setLoggedIn } =
-  userSlice.actions;
+export const {
+  setCurrentUser,
+  setLoginLoading,
+  setLoginError,
+  setLoggedIn,
+  setUserOnline,
+  setChatCurrent,
+} = userSlice.actions;
 
 export const userSelector = (state: { user: UserState }) => state.user;
 

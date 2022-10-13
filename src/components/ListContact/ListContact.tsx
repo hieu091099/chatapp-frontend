@@ -6,12 +6,8 @@ import { BsFillPeopleFill } from "react-icons/bs";
 import PersonalMessage from "./PersonalMessage/PersonalMessage";
 import axios from "axios";
 import { BASE_URL } from "../../utils/config";
-interface Props {
-  setChooseConversation: React.Dispatch<
-    React.SetStateAction<number | undefined>
-  >;
-}
-const ListContact: React.FC<Props> = ({ setChooseConversation }) => {
+interface Props {}
+const ListContact: React.FC<Props> = () => {
   const [friend, setFriend] = useState<[]>([]);
   const getAllFriend = async () => {
     let accessToken: string = JSON.parse(
@@ -32,13 +28,7 @@ const ListContact: React.FC<Props> = ({ setChooseConversation }) => {
   }, []);
   const renderFriend = () => {
     return friend.map((item, index) => {
-      return (
-        <PersonalMessage
-          key={index}
-          user={item}
-          setChooseConversation={setChooseConversation}
-        />
-      );
+      return <PersonalMessage key={index} user={item} />;
     });
   };
   return (
