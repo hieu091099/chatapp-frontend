@@ -5,19 +5,18 @@ import { BsImage } from "react-icons/bs";
 import { BiVideo } from "react-icons/bi";
 import { GiClaymoreExplosive } from "react-icons/gi";
 import { AiOutlineFileText } from "react-icons/ai";
+import { useAppSelector } from "../../redux/hooks";
+import { userSelector } from "../../redux/features/user/userSlice";
 const { Panel } = Collapse;
 type Props = {};
 
 const RightSideBar = (props: Props) => {
+  const { chatCurrent } = useAppSelector(userSelector);
   return (
     <div className="right-sidebar">
       <div className="right-sidebar__info">
-        <img
-          className="person-avatar"
-          src="https://hit.edu.vn/nhung-nhan-vat-manh-nhat-trong-naruto/imager_6512.jpg"
-          alt=""
-        />
-        <h2 className="person-name">Stephen Curry</h2>
+        <img className="person-avatar" src={chatCurrent.avatarPath} alt="" />
+        <h2 className="person-name">{chatCurrent.displayName}</h2>
         <p>Create something New</p>
       </div>
       <div className="right-sidebar__function">

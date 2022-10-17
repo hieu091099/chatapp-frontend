@@ -34,6 +34,10 @@ const Home = () => {
     socket.current.on("getUsers", (users: any) => {
       dispatch(setUserOnline(users));
     });
+    // return () => {
+    //   socket.off("connect");
+    //   socket.off("disconnect");
+    // };
   }, [userCurrent]);
   return (
     <Row style={{ backgroundColor: "#212329", height: "100%", width: "100%" }}>

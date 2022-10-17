@@ -1,5 +1,4 @@
 import { Input, Spin } from "antd";
-import { UserOutlined } from "@ant-design/icons";
 import React, { useEffect, useRef, useState } from "react";
 import { FaImage } from "react-icons/fa";
 import { BsEmojiSmile, BsFillMicFill } from "react-icons/bs";
@@ -11,37 +10,42 @@ import { MessageM } from "../../models/model";
 import { io } from "socket.io-client";
 import { useAppSelector } from "../../redux/hooks";
 import { userSelector } from "../../redux/features/user/userSlice";
-
+import moment from "moment";
 const Chat: React.FC = () => {
-  const [isFriend, setIsFriend] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
-  const { chatCurrent } = useAppSelector(userSelector);
+  const { chatCurrent, userCurrent } = useAppSelector(userSelector);
   const [arrivalMessage, setArrivalMessage] = useState<any>({});
-  const [countSendSuccess, setCountSendSuccess] = useState<number>(0);
   const [listMessage, setListMessage] = useState<MessageM[]>([]);
+  console.log({ listMessage });
   const socket: any = useRef();
   useEffect(() => {
     getMessages().then((res) => {
       setListMessage(res);
     });
-  }, [chatCurrent.id, countSendSuccess]);
-  console.log("test", arrivalMessage);
+  }, [chatCurrent.id]);
   useEffect(() => {
     socket.current = io("ws://localhost:8900");
     socket.current.on(
       "getMessage",
       (data: { senderId: number; receiveId: number; content: string }) => {
-        console.log({ data });
-        setArrivalMessage({
-          senderId: data.senderId,
-          content: data.content,
-          createdAt: Date.now(),
-        });
+        if (userCurrent.id == data.receiveId) {
+          setArrivalMessage({
+            senderId: data.senderId,
+            receiveId: data.receiveId,
+            content: data.content,
+            createdAt: moment().format(),
+          });
+        }
       }
     );
-  }, []);
+  }, [message]);
 
+  useEffect(() => {
+    arrivalMessage && setListMessage((prev) => [...prev, arrivalMessage]);
+  }, [arrivalMessage]);
+
+  useEffect(() => {}, [listMessage]);
   const getMessages = async () => {
     let user = JSON.parse(localStorage.getItem("user") || "{}");
     let result = await axios({
@@ -52,40 +56,55 @@ const Chat: React.FC = () => {
     return result.data;
   };
   const sendMessage = async () => {
-    let user = JSON.parse(localStorage.getItem("user") || "{}");
-    let accessToken = JSON.parse(localStorage.getItem("accessToken") || "");
-    setLoading(true);
+    if (message != "") {
+      let user = JSON.parse(localStorage.getItem("user") || "{}");
+      let accessToken = JSON.parse(localStorage.getItem("accessToken") || "");
+      setLoading(true);
 
-    socket.current.emit("sendMessage", {
-      senderId: user.id,
-      receiveId: chatCurrent.id,
-      content: message,
-    });
-    let result = await axios({
-      method: "POST",
-      url: BASE_URL + "/message/sendMessage",
-      headers: {
-        "x-access-token": accessToken,
-      },
-      data: {
+      socket.current.emit("sendMessage", {
         senderId: user.id,
         receiveId: chatCurrent.id,
         content: message,
-      },
-    });
-    if (result.status == 200) {
-      setCountSendSuccess(countSendSuccess + 1);
-      setMessage("");
-      setLoading(false);
+      });
+      let result = await axios({
+        method: "POST",
+        url: BASE_URL + "/message/sendMessage",
+        headers: {
+          "x-access-token": accessToken,
+        },
+        data: {
+          senderId: user.id,
+          receiveId: chatCurrent.id,
+          content: message,
+        },
+      });
+      if (result.status == 200) {
+        setMessage("");
+        setLoading(false);
+      }
     }
   };
   const renderMess = (listMessage: MessageM[]) => {
     let user = JSON.parse(localStorage.getItem("user") || "{}");
     return listMessage.map((e, index) => {
       if (e.senderId !== user.id) {
-        return <Message key={index} isFriend={true} message={e} />;
+        return (
+          <Message
+            key={index}
+            isFriend={true}
+            message={e}
+            chatCurrent={chatCurrent}
+          />
+        );
       } else {
-        return <Message key={index} isFriend={false} message={e} />;
+        return (
+          <Message
+            key={index}
+            isFriend={false}
+            message={e}
+            chatCurrent={chatCurrent}
+          />
+        );
       }
     });
   };
