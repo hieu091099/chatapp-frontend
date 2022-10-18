@@ -11,55 +11,65 @@ import { io } from "socket.io-client";
 import { useAppSelector } from "../../redux/hooks";
 import { userSelector } from "../../redux/features/user/userSlice";
 import moment from "moment";
+import { current } from "@reduxjs/toolkit";
 const Chat: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
   const { chatCurrent, userCurrent } = useAppSelector(userSelector);
   const [arrivalMessage, setArrivalMessage] = useState<any>({});
   const [listMessage, setListMessage] = useState<MessageM[]>([]);
-  console.log({ listMessage });
+  const scrollRef = useRef<null | HTMLElement>(null);
   const socket: any = useRef();
-  useEffect(() => {
-    getMessages().then((res) => {
-      setListMessage(res);
-    });
-  }, [chatCurrent.id]);
+
+  console.log({ arrivalMessage });
+  // console.log({ listMessage });
+
   useEffect(() => {
     socket.current = io("ws://localhost:8900");
     socket.current.on(
       "getMessage",
       (data: { senderId: number; receiveId: number; content: string }) => {
-        if (userCurrent.id == data.receiveId) {
-          setArrivalMessage({
-            senderId: data.senderId,
-            receiveId: data.receiveId,
-            content: data.content,
-            createdAt: moment().format(),
-          });
-        }
+        // if (
+        //   userCurrent.id === data.receiveId ||
+        //   userCurrent.id === data.senderId
+        // ) {
+        setArrivalMessage({
+          senderId: data.senderId,
+          receiveId: data.receiveId,
+          content: data.content,
+          createdAt: moment().format(),
+        });
+        // }
       }
     );
   }, [message]);
 
   useEffect(() => {
-    arrivalMessage && setListMessage((prev) => [...prev, arrivalMessage]);
+    scrollRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [listMessage]);
+
+  useEffect(() => {
+    const getMessages = async () => {
+      let user = JSON.parse(localStorage.getItem("user") || "{}");
+      let result = await axios({
+        method: "GET",
+        url: `${BASE_URL}/message/getMessages/${user.id}/${chatCurrent.id}`,
+      });
+      setListMessage(result.data);
+    };
+    getMessages();
+  }, [chatCurrent.id]);
+  useEffect(() => {
+    (arrivalMessage && userCurrent.id === arrivalMessage.senderId) ||
+      (userCurrent.id === arrivalMessage.receiveId &&
+        setListMessage((prev) => [...prev, arrivalMessage]));
   }, [arrivalMessage]);
 
-  useEffect(() => {}, [listMessage]);
-  const getMessages = async () => {
-    let user = JSON.parse(localStorage.getItem("user") || "{}");
-    let result = await axios({
-      method: "GET",
-      url: `${BASE_URL}/message/getMessages/${user.id}/${chatCurrent.id}`,
-    });
-    // console.log(result.data);
-    return result.data;
-  };
   const sendMessage = async () => {
-    if (message != "") {
+    if (message !== "") {
       let user = JSON.parse(localStorage.getItem("user") || "{}");
       let accessToken = JSON.parse(localStorage.getItem("accessToken") || "");
-      setLoading(true);
+      // setLoading(true);
 
       socket.current.emit("sendMessage", {
         senderId: user.id,
@@ -78,9 +88,9 @@ const Chat: React.FC = () => {
           content: message,
         },
       });
-      if (result.status == 200) {
+      if (result.status === 200) {
         setMessage("");
-        setLoading(false);
+        // setLoading(false);
       }
     }
   };
@@ -115,7 +125,10 @@ const Chat: React.FC = () => {
           <Spin size="large" />
         </div>
       ) : (
-        <div className="chat-content">{renderMess(listMessage)}</div>
+        <div className="chat-content">
+          {renderMess(listMessage)}
+          <div ref={scrollRef as React.RefObject<HTMLDivElement>}></div>
+        </div>
       )}
       <div className="input-chat">
         <Input

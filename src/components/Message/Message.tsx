@@ -1,9 +1,9 @@
-import { message } from "antd";
 import React from "react";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { MessageM, User } from "../../models/model";
 import { userSelector } from "../../redux/features/user/userSlice";
 import { useAppSelector } from "../../redux/hooks";
+import moment from "moment";
 type Props = {
   isFriend: boolean;
   message: MessageM;
@@ -12,9 +12,13 @@ type Props = {
 
 const Message: React.FC<Props> = ({ isFriend, message, chatCurrent }) => {
   const { userCurrent } = useAppSelector(userSelector);
+  // console.log(message.createdAt);
   return (
     <div className={`message-item ${!isFriend ? "my-mes" : ""}`}>
-      <div className="left-content">
+      <div
+        className="left-content"
+        style={!isFriend ? { display: "none" } : {}}
+      >
         <img
           src={isFriend ? chatCurrent.avatarPath : userCurrent.avatarPath}
           alt=""
@@ -25,7 +29,7 @@ const Message: React.FC<Props> = ({ isFriend, message, chatCurrent }) => {
           <div className="name">
             {isFriend ? chatCurrent.displayName : "You"}
           </div>
-          <div className="time">15:14 PM</div>
+          <div className="time">{moment(message.createdAt).fromNow()}</div>
         </div>
         <div className="message-content">
           <div className="message">{message.content}</div>
