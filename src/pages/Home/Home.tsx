@@ -27,7 +27,9 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-    socket.current = io("ws://localhost:8900");
+    socket.current = io("ws://192.168.18.172:8900", {
+      transports: ["websocket"],
+    });
     if (userCurrent) {
       socket.current.emit("addUser", userCurrent.id);
     }

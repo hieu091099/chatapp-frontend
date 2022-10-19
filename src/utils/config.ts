@@ -1,7 +1,7 @@
 import axios from "axios";
 import jwt_decode from "jwt-decode";
 
-export const BASE_URL: string = "http://localhost:3030/api";
+export const BASE_URL: string = "http://192.168.18.172:3030/api";
 
 export const instance = axios.create({
   baseURL: BASE_URL,

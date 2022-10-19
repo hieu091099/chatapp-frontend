@@ -20,12 +20,13 @@ const Chat: React.FC = () => {
   const [listMessage, setListMessage] = useState<MessageM[]>([]);
   const scrollRef = useRef<null | HTMLElement>(null);
   const socket: any = useRef();
-
-  console.log({ arrivalMessage });
-  // console.log({ listMessage });
+  const [test, setTest] = useState<any>([]);
+  console.log(test);
 
   useEffect(() => {
-    socket.current = io("ws://localhost:8900");
+    socket.current = io("ws://192.168.18.172:8900", {
+      transports: ["websocket"],
+    });
     socket.current.on(
       "getMessage",
       (data: { senderId: number; receiveId: number; content: string }) => {
@@ -42,7 +43,7 @@ const Chat: React.FC = () => {
         // }
       }
     );
-  }, [message]);
+  }, []);
 
   useEffect(() => {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -56,13 +57,14 @@ const Chat: React.FC = () => {
         url: `${BASE_URL}/message/getMessages/${user.id}/${chatCurrent.id}`,
       });
       setListMessage(result.data);
+      setTest([...test, result.data[0].createdAt]);
     };
     getMessages();
   }, [chatCurrent.id]);
   useEffect(() => {
-    (arrivalMessage && userCurrent.id === arrivalMessage.senderId) ||
-      (userCurrent.id === arrivalMessage.receiveId &&
-        setListMessage((prev) => [...prev, arrivalMessage]));
+    arrivalMessage &&
+      arrivalMessage.receiveId === userCurrent.id &&
+      setListMessage((prev) => [...prev, arrivalMessage]);
   }, [arrivalMessage]);
 
   const sendMessage = async () => {
@@ -89,6 +91,8 @@ const Chat: React.FC = () => {
         },
       });
       if (result.status === 200) {
+        setListMessage([...listMessage, result.data.message]);
+
         setMessage("");
         // setLoading(false);
       }
