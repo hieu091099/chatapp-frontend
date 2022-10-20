@@ -9,13 +9,16 @@ import ListContact from "../../components/ListContact/ListContact";
 import RightSideBar from "../../components/RightSideBar/RightSideBar";
 import {
   setCurrentUser,
+  setLastTimeActive,
   setUserOnline,
   userSelector,
 } from "../../redux/features/user/userSlice";
 import { useAppSelector } from "../../redux/hooks";
 import { useAppDispatch } from "./../../redux/hooks";
+import { getLastTimeActive } from "../../redux/features/user/userAPI";
 const Home = () => {
-  const { userCurrent, usersOnline } = useAppSelector(userSelector);
+  const { userCurrent, usersOnline, chatCurrent } =
+    useAppSelector(userSelector);
   const socket: any = useRef();
   let user = JSON.parse(localStorage.getItem("user") || "");
   const dispatch = useAppDispatch();
@@ -35,7 +38,9 @@ const Home = () => {
     }
     socket.current.on("getUsers", (users: any) => {
       dispatch(setUserOnline(users));
+      dispatch(getLastTimeActive(chatCurrent.id));
     });
+
     // return () => {
     //   socket.off("connect");
     //   socket.off("disconnect");

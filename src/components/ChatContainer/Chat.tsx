@@ -20,8 +20,6 @@ const Chat: React.FC = () => {
   const [listMessage, setListMessage] = useState<MessageM[]>([]);
   const scrollRef = useRef<null | HTMLElement>(null);
   const socket: any = useRef();
-  const [test, setTest] = useState<any>([]);
-  console.log(test);
 
   useEffect(() => {
     socket.current = io("ws://192.168.18.172:8900", {
@@ -57,7 +55,6 @@ const Chat: React.FC = () => {
         url: `${BASE_URL}/message/getMessages/${user.id}/${chatCurrent.id}`,
       });
       setListMessage(result.data);
-      setTest([...test, result.data[0].createdAt]);
     };
     getMessages();
   }, [chatCurrent.id]);

@@ -28,6 +28,7 @@ export interface UserState {
   isLoggedIn: boolean;
   isLoginLoading: boolean;
   errorLogin: string;
+  lastTimeActive: string;
 }
 
 const initialState: UserState = {
@@ -56,6 +57,7 @@ const initialState: UserState = {
   isLoggedIn: false,
   isLoginLoading: false,
   errorLogin: "",
+  lastTimeActive: "",
 };
 
 export const userSlice = createSlice({
@@ -80,8 +82,11 @@ export const userSlice = createSlice({
     setLoginError: (state, { payload }: PayloadAction<any>) => {
       state.errorLogin = payload;
     },
-    setLoggedIn: (state, { payload }: PayloadAction<any>) => {
+    setLoggedIn: (state, { payload }: PayloadAction<boolean>) => {
       state.isLoggedIn = payload;
+    },
+    setLastTimeActive: (state, { payload }: PayloadAction<string>) => {
+      state.lastTimeActive = payload;
     },
   },
   extraReducers: (builder) => {
@@ -96,6 +101,7 @@ export const {
   setLoggedIn,
   setUserOnline,
   setChatCurrent,
+  setLastTimeActive,
 } = userSlice.actions;
 
 export const userSelector = (state: { user: UserState }) => state.user;

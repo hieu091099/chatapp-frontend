@@ -1,7 +1,9 @@
-import { instance } from "../../../utils/config";
+import axios from "axios";
+import { BASE_URL, instance } from "../../../utils/config";
 import { AppThunk } from "../../store";
 import {
   setCurrentUser,
+  setLastTimeActive,
   setLoggedIn,
   setLoginError,
   setLoginLoading,
@@ -35,6 +37,27 @@ export const login = (user: any): AppThunk => {
     } catch (error) {
       dispatch(setLoginError(error));
       dispatch(setLoginLoading(false));
+    }
+  };
+};
+export const getLastTimeActive = (userId: number): AppThunk => {
+  return async (dispatch) => {
+    try {
+      let accessToken: string = JSON.parse(
+        localStorage.getItem("accessToken") || ""
+      );
+      let result = await axios({
+        method: "GET",
+        url: `${BASE_URL}/userStatus/${userId}`,
+        headers: {
+          "x-access-token": accessToken,
+        },
+      });
+      if (result.status === 200) {
+        dispatch(setLastTimeActive(result.data.time));
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
 };

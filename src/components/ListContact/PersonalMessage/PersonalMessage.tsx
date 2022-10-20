@@ -1,6 +1,10 @@
 import React from "react";
 import { User } from "../../../models/model";
-import { setChatCurrent } from "../../../redux/features/user/userSlice";
+import { getLastTimeActive } from "../../../redux/features/user/userAPI";
+import {
+  setChatCurrent,
+  setLastTimeActive,
+} from "../../../redux/features/user/userSlice";
 import { useAppSelector, useAppDispatch } from "../../../redux/hooks";
 import {
   increment,
@@ -18,7 +22,10 @@ const PersonalMessage: React.FC<Props> = ({ user }) => {
   return (
     <div
       className="personal-message"
-      onClick={() => dispatch(setChatCurrent(user))}
+      onClick={() => {
+        dispatch(setChatCurrent(user));
+        dispatch(getLastTimeActive(user.id));
+      }}
     >
       <div className="personal-message__left">
         <div className="person-avatar">

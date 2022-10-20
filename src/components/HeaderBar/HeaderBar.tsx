@@ -1,51 +1,38 @@
 import React, { useEffect, useState } from "react";
 import { BsCameraVideo, BsTelephone, BsSearch } from "react-icons/bs";
 import { userSelector } from "../../redux/features/user/userSlice";
-import { useAppSelector } from "../../redux/hooks";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import _ from "lodash";
 import axios from "axios";
-import moment from "moment";
 import { BASE_URL } from "./../../utils/config";
+import moment from "moment";
+import { getLastTimeActive } from "../../redux/features/user/userAPI";
+// import "moment/locale/vi"; // without this line it didn't work
+// moment.locale("vi");
+
 type Props = {};
 
 const HeaderBar = (props: Props) => {
-  const { userCurrent, chatCurrent, usersOnline } =
+  const { userCurrent, chatCurrent, usersOnline, lastTimeActive } =
     useAppSelector(userSelector);
-  const [lastTimeActive, setLastTimeActive] = useState<string>("");
+  const dispatch = useAppDispatch();
   const checkIsOnline = (): Boolean => {
-    let check = usersOnline.findIndex((i) => i.userId == chatCurrent.id);
-    if (check != -1) {
+    let check = usersOnline.findIndex((i) => i.userId === chatCurrent.id);
+    if (check !== -1) {
       return true;
     }
     return false;
   };
   useEffect(() => {
-    let getLastTimeActive = async () => {
-      let accessToken: string = JSON.parse(
-        localStorage.getItem("accessToken") || ""
-      );
-      console.log(chatCurrent.id);
-      let result = await axios({
-        method: "GET",
-        url: `${BASE_URL}/userStatus/${chatCurrent.id}`,
-        headers: {
-          "x-access-token": accessToken,
-        },
-      });
-      if (result.status === 200) {
-        console.log("thiet", result.data);
-        setLastTimeActive(moment(result.data).fromNow());
-      }
-    };
-    getLastTimeActive();
-  }, [chatCurrent]);
+    dispatch(getLastTimeActive(chatCurrent.id));
+  }, [usersOnline]);
   return (
     <div className="header-bar">
       <div className="header-bar__left">
         <div className="header-avatar">
           <img
             src={
-              chatCurrent.id != 0
+              chatCurrent.id !== 0
                 ? chatCurrent.avatarPath
                 : userCurrent.avatarPath
             }
@@ -54,11 +41,9 @@ const HeaderBar = (props: Props) => {
         </div>
         <div className="header-info">
           <div className="name">
-            {chatCurrent?.id != 0
-              ? chatCurrent.displayName
-              : `You ( ${userCurrent.displayName} )`}
+            {chatCurrent?.id !== 0 ? chatCurrent.displayName : `Your Cloud`}
           </div>
-          {checkIsOnline() ? (
+          {checkIsOnline() || chatCurrent.id === 0 ? (
             <div className="active">
               <div className="type online"></div>
               <div className="status">Online</div>
@@ -66,9 +51,7 @@ const HeaderBar = (props: Props) => {
           ) : (
             <div className="active">
               {/* <div className="type online"></div> */}
-              <div className="status">
-                {moment("2022-10-19T06:42:48.000Z").fromNow()}
-              </div>
+              <div className="status">{moment(lastTimeActive).fromNow()}</div>
             </div>
           )}
         </div>
