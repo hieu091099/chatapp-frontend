@@ -530,7 +530,8 @@ body,
   transition: 1s;
 }
 .login-page .login-col.left {
-  background-color: #65b7f3;
+  background-image: -webkit-gradient(linear, left top, right top, from(#3c9ae8), to(#112a45));
+  background-image: linear-gradient(to right, #3c9ae8, #112a45);
 }
 .login-page .login-col.full {
   width: 100% !important;
@@ -551,4 +552,51 @@ body,
   color: white !important;
   margin: 0 5px;
   cursor: pointer;
+}
+.login-page .my-input {
+  margin: 0 auto;
+  height: 46px;
+  padding: 0 20px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  background-color: #1e1f25;
+  color: white;
+  border-radius: 5px;
+}
+.login-page .my-input span.ant-input-affix-wrapper.ant-input-affix-wrapper-lg {
+  background-color: #1e1f25;
+  -webkit-box-align: center !important;
+      -ms-flex-align: center !important;
+          align-items: center !important;
+}
+.login-page .my-input span.ant-input-affix-wrapper.ant-input-affix-wrapper-lg span {
+  color: #818288;
+}
+.login-page .my-input .ant-input-group-addon {
+  background-color: #1e1f25;
+  cursor: pointer;
+}
+.login-page .my-input .ant-input-group-addon div {
+  color: #818288;
+}
+.login-page .my-input .ant-input-group-addon:hover {
+  border-color: #40a9ff;
+  border-right-width: 1px;
+  z-index: 1;
+  background-color: #1e1f25;
+}
+.login-page .my-input .ant-input-group-addon:hover div {
+  color: #40a9ff;
+}
+.login-page .my-input .ant-input {
+  background-color: #1e1f25;
+  color: white;
+}
+
+.ant-tabs-tab-btn {
+  color: white;
 }

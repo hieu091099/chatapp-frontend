@@ -44,16 +44,31 @@ const Login: React.FC<Props> = ({ activeKey, setActiveKey, setCol }) => {
   const [changeStateLogin, setChangeStateLogin] = useState<number>(0);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [ip, setIP] = useState("");
   const handleLogin = async () => {
     setChangeStateLogin(changeStateLogin + 1);
     dispatch(login(user));
   };
+  console.log("ip", ip);
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key == "Enter") {
-      setChangeStateLogin(changeStateLogin + 1);
-      dispatch(login(user));
+    if (e.key === "Enter") {
+      if (ip === "192.168.18.172") {
+        navigate("/prevent");
+      } else {
+        setChangeStateLogin(changeStateLogin + 1);
+        dispatch(login(user));
+      }
     }
   };
+
+  //creating function to load ip address from the API
+  const getData = async () => {
+    const res = await axios.get("https://geolocation-db.com/json/");
+    setIP(res.data.IPv4);
+  };
+  useEffect(() => {
+    getData();
+  }, []);
   useEffect(() => {
     if (isLoggedIn) {
       setCol(true);
@@ -61,7 +76,7 @@ const Login: React.FC<Props> = ({ activeKey, setActiveKey, setCol }) => {
         setLoading(false);
         navigate("/");
       }, 1000);
-    } else if (!isLoggedIn && errorLogin != "") {
+    } else if (!isLoggedIn && errorLogin !== "") {
       notification["error"]({
         message: "Notification",
         description: errorLogin,
@@ -80,29 +95,41 @@ const Login: React.FC<Props> = ({ activeKey, setActiveKey, setCol }) => {
           <div className="form__login-title">
             <Typography.Title
               level={2}
-              style={{ marginBottom: "5px", textAlign: "center" }}
+              style={{
+                marginBottom: "5px",
+                textAlign: "center",
+                color: "white",
+              }}
             >
               Sign In
             </Typography.Title>
           </div>
           <div>
-            <Typography.Title level={5} style={{ marginBottom: "5px" }}>
+            <Typography.Title
+              level={5}
+              style={{ marginBottom: "5px", color: "white" }}
+            >
               Username
             </Typography.Title>
             <Input
               // style={{ borderRadius: "5px" }}
               value={user.username}
               placeholder="Your Username"
+              className="my-input"
               prefix={<UserOutlined />}
               onChange={(e) => setUser({ ...user, username: e.target.value })}
             />
           </div>
           <div style={{ marginTop: "10px" }}>
-            <Typography.Title level={5} style={{ marginBottom: "5px" }}>
+            <Typography.Title
+              level={5}
+              style={{ marginBottom: "5px", color: "white" }}
+            >
               Password
             </Typography.Title>
             <Input.Password
               // style={{ borderRadius: "5px" }}
+              className="my-input"
               value={user.password}
               placeholder="Your Password"
               prefix={<KeyOutlined />}
@@ -127,6 +154,7 @@ const Login: React.FC<Props> = ({ activeKey, setActiveKey, setCol }) => {
             type="primary"
             style={{
               width: "100%",
+              height: "40px",
               // backgroundColor: "#111d2c",
               // borderColor: "#111d2c",
             }}
@@ -136,7 +164,7 @@ const Login: React.FC<Props> = ({ activeKey, setActiveKey, setCol }) => {
           </Button>
         </div>
         <div style={{ textAlign: "center", marginTop: "10px" }}>
-          <label htmlFor="">
+          <label htmlFor="" style={{ color: "white" }}>
             Need an account? <a onClick={() => setActiveKey("2")}>Sign Up</a>
           </label>
         </div>
@@ -161,7 +189,9 @@ const Login: React.FC<Props> = ({ activeKey, setActiveKey, setCol }) => {
               padding: "5px",
             }}
           >
-            <label htmlFor="">or login with</label>
+            <label style={{ color: "white" }} htmlFor="">
+              or login with
+            </label>
           </div>
           <div style={{ width: "30%" }}>
             <hr />

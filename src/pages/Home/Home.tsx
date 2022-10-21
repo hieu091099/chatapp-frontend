@@ -16,6 +16,7 @@ import {
 import { useAppSelector } from "../../redux/hooks";
 import { useAppDispatch } from "./../../redux/hooks";
 import { getLastTimeActive } from "../../redux/features/user/userAPI";
+import EmojiPicker, { Emoji } from "emoji-picker-react";
 const Home = () => {
   const { userCurrent, usersOnline, chatCurrent } =
     useAppSelector(userSelector);
@@ -46,10 +47,13 @@ const Home = () => {
     //   socket.off("disconnect");
     // };
   }, [userCurrent]);
+
   return (
     <Row style={{ backgroundColor: "#212329", height: "100%", width: "100%" }}>
       <Col md={2} lg={2} xl={1}>
         <LeftSideBar />
+        {/* <EmojiPicker />
+        <Emoji unified="1f423" /> */}
       </Col>
       <Col md={7} lg={6} xl={5} style={{ backgroundColor: "#212329" }}>
         <ListContact />

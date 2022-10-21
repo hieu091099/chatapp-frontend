@@ -59,29 +59,37 @@ const Register: React.FC<Props> = ({ setVisible, activeKey, setActiveKey }) => {
         <div className="form__login-title">
           <Typography.Title
             level={2}
-            style={{ marginBottom: "5px", textAlign: "center" }}
+            style={{ marginBottom: "5px", textAlign: "center", color: "white" }}
           >
             Sign Up
           </Typography.Title>
         </div>
         <div>
-          <Typography.Title level={5} style={{ marginBottom: "5px" }}>
+          <Typography.Title
+            level={5}
+            style={{ marginBottom: "5px", color: "white" }}
+          >
             Username
           </Typography.Title>
           <Input
             // style={{ borderRadius: "5px" }}
             value={user.username}
+            className="my-input"
             placeholder="Your User Name"
             prefix={<UserOutlined />}
             onChange={(e) => setUser({ ...user, username: e.target.value })}
           />
         </div>
         <div style={{ marginTop: "10px" }}>
-          <Typography.Title level={5} style={{ marginBottom: "5px" }}>
+          <Typography.Title
+            level={5}
+            style={{ marginBottom: "5px", color: "white" }}
+          >
             Full Name
           </Typography.Title>
           <Input
             // style={{ borderRadius: "5px" }}
+            className="my-input"
             value={user.displayName}
             placeholder="Your Full Name"
             prefix={<UserOutlined />}
@@ -89,11 +97,15 @@ const Register: React.FC<Props> = ({ setVisible, activeKey, setActiveKey }) => {
           />
         </div>
         <div style={{ marginTop: "10px" }}>
-          <Typography.Title level={5} style={{ marginBottom: "5px" }}>
+          <Typography.Title
+            level={5}
+            style={{ marginBottom: "5px", color: "white" }}
+          >
             Email
           </Typography.Title>
           <Input
             // style={{ borderRadius: "5px" }}
+            className="my-input"
             value={user.email}
             placeholder="Your Email"
             prefix={<MailOutlined />}
@@ -101,11 +113,15 @@ const Register: React.FC<Props> = ({ setVisible, activeKey, setActiveKey }) => {
           />
         </div>
         <div style={{ marginTop: "10px" }}>
-          <Typography.Title level={5} style={{ marginBottom: "5px" }}>
+          <Typography.Title
+            level={5}
+            style={{ marginBottom: "5px", color: "white" }}
+          >
             Password
           </Typography.Title>
           <Input.Password
             // style={{ borderRadius: "5px" }}
+            className="my-input"
             value={user.password}
             placeholder="Your Password"
             prefix={<KeyOutlined />}
@@ -116,12 +132,16 @@ const Register: React.FC<Props> = ({ setVisible, activeKey, setActiveKey }) => {
           />
         </div>
         <div style={{ marginTop: "10px" }}>
-          <Typography.Title level={5} style={{ marginBottom: "5px" }}>
+          <Typography.Title
+            level={5}
+            style={{ marginBottom: "5px", color: "white" }}
+          >
             Confirm Password
           </Typography.Title>
           <Input.Password
             // style={{ borderRadius: "5px" }}
             // value={user.}
+            className="my-input"
             placeholder="Confirm Your Password"
             prefix={<KeyOutlined />}
             iconRender={(visible) =>
@@ -131,11 +151,18 @@ const Register: React.FC<Props> = ({ setVisible, activeKey, setActiveKey }) => {
         </div>
       </div>
 
-      <div style={{ marginTop: "20px" }}>
+      <Checkbox style={{ margin: "10px 0" }} onChange={onChange}>
+        <label style={{ color: "white" }}>
+          I agree to all the <strong>Term</strong> ,
+          <strong>Privacy Policy</strong> and <strong>Fees</strong>
+        </label>
+      </Checkbox>
+      <div style={{ marginTop: "10px" }}>
         <Button
           type="primary"
           style={{
             width: "100%",
+            height: "40px",
             // backgroundColor: "#111d2c",
             // borderColor: "#111d2c",
           }}
@@ -144,13 +171,9 @@ const Register: React.FC<Props> = ({ setVisible, activeKey, setActiveKey }) => {
           Register
         </Button>
       </div>
-      <Checkbox style={{ margin: "10px 0" }} onChange={onChange}>
-        I agree to all the <strong>Term</strong> ,{" "}
-        <strong>Privacy Policy</strong> and <strong>Fees</strong>
-      </Checkbox>
       <div style={{ textAlign: "center", marginTop: "10px" }}>
-        <label htmlFor="">
-          Already have an account ?{" "}
+        <label htmlFor="" style={{ color: "white" }}>
+          Already have an account ?
           <a onClick={() => setActiveKey("1")}>Sign In</a>
         </label>
       </div>

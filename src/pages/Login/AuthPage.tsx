@@ -1,6 +1,6 @@
 import { Button, Col, Input, Row, Tabs, Typography } from "antd";
 
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import OTPModal from "../../components/OTPModal/OTPModal";
 import Login from "../../components/Login/Login";
 import Register from "../../components/Register/Register";
@@ -10,13 +10,12 @@ import * as animationDataCheck from "../../assets/check.json";
 
 import Lottie from "react-lottie";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 const { TabPane } = Tabs;
 const AuthPage = () => {
-  const element = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
   const [activeKey, setActiveKey] = useState<string>("1");
   const [col, setCol] = useState<boolean>(false);
-  const navigate = useNavigate();
 
   const handleLogin = () => {
     setVisible(true);
@@ -47,7 +46,11 @@ const AuthPage = () => {
   // }
   return (
     <Row className={`login-page ${col ? "full" : ""}`}>
-      <Col span={12} className={`login-col left ${col ? "full" : ""}`}>
+      <Col
+        // style={{ backgroundColor: "#212329" }}
+        span={12}
+        className={`login-col left ${col ? "full" : ""}`}
+      >
         {!col ? (
           <Lottie
             style={{ marginTop: "100px" }}
@@ -72,7 +75,7 @@ const AuthPage = () => {
       </Col>
       <Col
         span={12}
-        // style={col ? { display: "none" } : {}}
+        style={{ backgroundColor: "#212329" }}
         className={`login-col right ${col ? "none" : ""}`}
       >
         {" "}
@@ -82,7 +85,7 @@ const AuthPage = () => {
           activeKey={activeKey}
           onChange={(key: string) => handleChangeTab(key)}
         >
-          <TabPane tab="Login" key="1">
+          <TabPane style={{ color: "white" }} tab="Login" key="1">
             <Login
               activeKey={activeKey}
               setActiveKey={setActiveKey}
@@ -100,7 +103,7 @@ const AuthPage = () => {
               test
             </Button> */}
           </TabPane>
-          <TabPane tab="Register" key="2">
+          <TabPane style={{ color: "white" }} tab="Register" key="2">
             <Register
               activeKey={activeKey}
               setVisible={setVisible}

@@ -6,6 +6,7 @@ import "./css/main.css";
 import Home from "./pages/Home/Home";
 // import PrivateRoute from "./utils/PrivateRoute";
 import PrivateRoutes from "./utils/PrivateRoutes";
+import Prevent from "./pages/Prevent/Prevent";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
           <Route path="/" element={<Home />} />
         </Route>
         <Route path="/login" element={<AuthPage />}></Route>
+        <Route path="/prevent" element={<Prevent />}></Route>
       </Routes>
     </BrowserRouter>
   );
