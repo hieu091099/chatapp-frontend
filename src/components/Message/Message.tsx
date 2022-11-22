@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { MessageM, User } from "../../models/model";
 import { userSelector } from "../../redux/features/user/userSlice";
 import { useAppSelector } from "../../redux/hooks";
 import moment from "moment";
+import { io } from "socket.io-client";
 type Props = {
   isFriend: boolean;
   message: MessageM;
@@ -11,6 +12,14 @@ type Props = {
 };
 
 const Message: React.FC<Props> = ({ isFriend, message, chatCurrent }) => {
+  const scrollRef = useRef<null | HTMLElement>(null);
+  const socket: any = useRef();
+  // useEffect(() => {
+  //   socket.current = io("ws://192.168.18.172:8900", {
+  //     transports: ["websocket"],
+  //   });
+
+  // }, []);
   const { userCurrent } = useAppSelector(userSelector);
   // console.log(message.createdAt);
   return (

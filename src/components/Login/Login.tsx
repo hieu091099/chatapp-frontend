@@ -10,7 +10,6 @@ import {
 } from "antd";
 import {
   UserOutlined,
-  MailOutlined,
   KeyOutlined,
   EyeTwoTone,
   EyeInvisibleOutlined,

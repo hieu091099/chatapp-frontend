@@ -12,15 +12,17 @@ import { useAppSelector } from "../../redux/hooks";
 import { userSelector } from "../../redux/features/user/userSlice";
 import moment from "moment";
 import { current } from "@reduxjs/toolkit";
+import { debounce } from "lodash";
 const Chat: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
   const { chatCurrent, userCurrent } = useAppSelector(userSelector);
+  const [isTyping, setIsTyping] = useState<boolean>(false);
   const [arrivalMessage, setArrivalMessage] = useState<any>({});
   const [listMessage, setListMessage] = useState<MessageM[]>([]);
   const scrollRef = useRef<null | HTMLElement>(null);
   const socket: any = useRef();
-
+  console.log({ isTyping });
   useEffect(() => {
     socket.current = io("ws://192.168.18.172:8900", {
       transports: ["websocket"],
@@ -39,6 +41,12 @@ const Chat: React.FC = () => {
           createdAt: moment().format(),
         });
         // }
+      }
+    );
+    socket.current.on(
+      "getUserTyping",
+      (data: { senderId: number; receiveId: number }) => {
+        console.log("okok", data);
       }
     );
   }, []);
@@ -63,6 +71,27 @@ const Chat: React.FC = () => {
       arrivalMessage.receiveId === userCurrent.id &&
       setListMessage((prev) => [...prev, arrivalMessage]);
   }, [arrivalMessage]);
+
+  /** use when user is typing */
+  useEffect(() => {
+    let user = JSON.parse(localStorage.getItem("user") || "{}");
+
+    if (isTyping) {
+      socket.current.emit("addUserTyping", {
+        senderId: user.id,
+        receiveId: chatCurrent.id,
+      });
+    } else {
+      socket.current.emit("removeUserTyping", {
+        senderId: user.id,
+        receiveId: chatCurrent.id,
+      });
+    }
+  }, [isTyping]);
+
+  const handleIsTyping = debounce(() => {
+    setIsTyping(false);
+  }, 5000);
 
   const sendMessage = async () => {
     if (message !== "") {
@@ -137,6 +166,11 @@ const Chat: React.FC = () => {
           className="input-custom"
           onChange={(e) => {
             setMessage(e.target.value);
+          }}
+          onKeyDown={() => {
+            console.log("object");
+            setIsTyping(true);
+            handleIsTyping();
           }}
           onPressEnter={() => sendMessage()}
           size="large"
