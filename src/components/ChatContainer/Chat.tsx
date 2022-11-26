@@ -10,19 +10,21 @@ import { MessageM } from "../../models/model";
 import { io } from "socket.io-client";
 import { useAppSelector } from "../../redux/hooks";
 import { userSelector } from "../../redux/features/user/userSlice";
+import { EmojiClickData, Theme } from "emoji-picker-react";
 import moment from "moment";
-import { current } from "@reduxjs/toolkit";
 import { debounce } from "lodash";
+import EmojiPicker from "emoji-picker-react";
 const Chat: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
   const { chatCurrent, userCurrent } = useAppSelector(userSelector);
+  const [userTyping, setUserTyping] = useState<any>([]);
   const [isTyping, setIsTyping] = useState<boolean>(false);
   const [arrivalMessage, setArrivalMessage] = useState<any>({});
   const [listMessage, setListMessage] = useState<MessageM[]>([]);
+  const [isShowEmojiPicker, setIsShowEmojiPicker] = useState<boolean>(false);
   const scrollRef = useRef<null | HTMLElement>(null);
   const socket: any = useRef();
-  console.log({ isTyping });
   useEffect(() => {
     socket.current = io("ws://192.168.18.172:8900", {
       transports: ["websocket"],
@@ -30,31 +32,25 @@ const Chat: React.FC = () => {
     socket.current.on(
       "getMessage",
       (data: { senderId: number; receiveId: number; content: string }) => {
-        // if (
-        //   userCurrent.id === data.receiveId ||
-        //   userCurrent.id === data.senderId
-        // ) {
         setArrivalMessage({
           senderId: data.senderId,
           receiveId: data.receiveId,
           content: data.content,
           createdAt: moment().format(),
         });
-        // }
       }
     );
-    socket.current.on(
-      "getUserTyping",
-      (data: { senderId: number; receiveId: number }) => {
-        console.log("okok", data);
-      }
-    );
+    socket.current.on("getUserTyping", (data: any) => {
+      setUserTyping(data);
+    });
   }, []);
+  // useEffect(())
 
   useEffect(() => {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [listMessage]);
 
+  /** get messages when change message box */
   useEffect(() => {
     const getMessages = async () => {
       let user = JSON.parse(localStorage.getItem("user") || "{}");
@@ -89,15 +85,36 @@ const Chat: React.FC = () => {
     }
   }, [isTyping]);
 
+  useEffect(() => {
+    if (message.length > 0) {
+      socket.current.emit("addUserTyping", {
+        senderId: userCurrent.id,
+        receiveId: chatCurrent.id,
+      });
+    } else if (message.length === 0) {
+      socket.current.emit("removeUserTyping", {
+        senderId: userCurrent.id,
+        receiveId: chatCurrent.id,
+      });
+    }
+  }, [message]);
+
+  const checkIsUserTyping = (array: any, id: number) => {
+    for (let i in array) {
+      if (array[i].senderId == id && array[i].receiveId == userCurrent.id) {
+        return true;
+      }
+    }
+    return false;
+  };
   const handleIsTyping = debounce(() => {
-    setIsTyping(false);
+    // setIsTyping(false);
   }, 5000);
 
   const sendMessage = async () => {
-    if (message !== "") {
+    if (message !== "" && chatCurrent.id !== 0) {
       let user = JSON.parse(localStorage.getItem("user") || "{}");
       let accessToken = JSON.parse(localStorage.getItem("accessToken") || "");
-      // setLoading(true);
 
       socket.current.emit("sendMessage", {
         senderId: user.id,
@@ -117,12 +134,22 @@ const Chat: React.FC = () => {
         },
       });
       if (result.status === 200) {
+        socket.current.emit("removeUserTyping", {
+          senderId: user.id,
+          receiveId: chatCurrent.id,
+        });
         setListMessage([...listMessage, result.data.message]);
-
         setMessage("");
         // setLoading(false);
       }
+    } else {
+      setMessage("");
     }
+  };
+  const onEmojiClick = (emojiObject: EmojiClickData, event: MouseEvent) => {
+    console.log(emojiObject);
+    setMessage((prevInput) => prevInput + emojiObject.emoji);
+    setIsShowEmojiPicker(false);
   };
   const renderMess = (listMessage: MessageM[]) => {
     let user = JSON.parse(localStorage.getItem("user") || "{}");
@@ -160,7 +187,25 @@ const Chat: React.FC = () => {
           <div ref={scrollRef as React.RefObject<HTMLDivElement>}></div>
         </div>
       )}
+      {isShowEmojiPicker && (
+        <div style={{ position: "relative" }}>
+          <div style={{ position: "absolute", right: 10, bottom: 10 }}>
+            <EmojiPicker onEmojiClick={onEmojiClick} />
+          </div>
+        </div>
+      )}
       <div className="input-chat">
+        {checkIsUserTyping(userTyping, chatCurrent.id) ? (
+          <div className="user-typing">
+            <div>{chatCurrent.displayName} đang nhập tin nhắn </div>
+            <div className="loader">
+              <div className="dot"> </div>
+            </div>
+          </div>
+        ) : (
+          <></>
+        )}
+
         <Input
           value={message}
           className="input-custom"
@@ -168,7 +213,6 @@ const Chat: React.FC = () => {
             setMessage(e.target.value);
           }}
           onKeyDown={() => {
-            console.log("object");
             setIsTyping(true);
             handleIsTyping();
           }}
@@ -194,7 +238,12 @@ const Chat: React.FC = () => {
               <div className="icon-chat" style={{ marginRight: "10px" }}>
                 <FaImage />
               </div>
-              <div className="icon-chat">
+              <div
+                className="icon-chat"
+                onClick={() => {
+                  setIsShowEmojiPicker(!isShowEmojiPicker);
+                }}
+              >
                 <BsEmojiSmile />
               </div>
             </div>
