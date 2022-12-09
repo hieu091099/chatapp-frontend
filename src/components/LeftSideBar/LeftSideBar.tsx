@@ -10,10 +10,13 @@ import {
 import { IoIosPeople } from "react-icons/io";
 import img from "../../assets/avatar/avatar.jpg";
 import { User } from "../../models/model";
+import { useAppSelector } from "../../redux/hooks";
+import { userSelector } from "../../redux/features/user/userSlice";
 
 const LeftSideBar = () => {
   let user: User = JSON.parse(localStorage.getItem("user") || "{}");
-  // console.log(user);
+  const { usersOnline } = useAppSelector(userSelector);
+
   const [isActive, setIsActive] = useState(1);
   const logout = () => {
     localStorage.removeItem("accessToken");
@@ -63,13 +66,6 @@ const LeftSideBar = () => {
         >
           <SettingOutlined className="sidebar-icon" />
         </div>
-        {/* <div
-          className={`left-sidebar__icon ${isActive == 7 ? "active" : ""}`}
-          onClick={() => setIsActive(7)}
-        >
-          <LogoutOutlined className="sidebar-icon" />
-        </div> */}
-
         <div className="slide"></div>
       </div>
       <div className="left-sidebar__bottom">

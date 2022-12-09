@@ -1,23 +1,26 @@
+import moment from "moment";
 import React from "react";
-import { User } from "../../../models/model";
+import { FriendItem, User } from "../../../models/model";
 import { getLastTimeActive } from "../../../redux/features/user/userAPI";
 import {
   setChatCurrent,
   setLastTimeActive,
+  userSelector,
 } from "../../../redux/features/user/userSlice";
-import { useAppSelector, useAppDispatch } from "../../../redux/hooks";
-import {
-  increment,
-  incrementAsync,
-  incrementByAmount,
-  selectCount,
-} from "./../../../redux/features/counter/counterSlice";
+import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 
 interface Props {
-  user: User;
+  user: FriendItem;
 }
 const PersonalMessage: React.FC<Props> = ({ user }) => {
-  const count = useAppSelector(selectCount);
+  const { usersOnline } = useAppSelector(userSelector);
+  const checkIsOnline = (): Boolean => {
+    let check = usersOnline.findIndex((i) => i.userId === user.id);
+    if (check !== -1) {
+      return true;
+    }
+    return false;
+  };
   const dispatch = useAppDispatch();
   return (
     <div
@@ -30,14 +33,17 @@ const PersonalMessage: React.FC<Props> = ({ user }) => {
       <div className="personal-message__left">
         <div className="person-avatar">
           <img className="avatar" src={user.avatarPath} alt="" />
+          {checkIsOnline() ? <span className="status"></span> : <></>}
         </div>
         <div className="personal-info">
           <div className="name">{user.displayName}</div>
-          <div className="last-message">Callback hell </div>
+          <div className="last-message">{user.latestMessage}</div>
         </div>
       </div>
       <div className="personal-message__right">
-        <div className="time-active">15:20 PM</div>
+        <div className="time-active">
+          {moment(user.updatedAt).format("hh:mm A")}
+        </div>
         <div className="count-unread">
           <span>2</span>
         </div>

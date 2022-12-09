@@ -1,14 +1,17 @@
 import { Input, Typography } from "antd";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { UserOutlined, SearchOutlined } from "@ant-design/icons";
 import { BiMessageRoundedDetail } from "react-icons/bi";
 import { BsFillPeopleFill } from "react-icons/bs";
 import PersonalMessage from "./PersonalMessage/PersonalMessage";
 import axios from "axios";
 import { BASE_URL } from "../../utils/config";
+import { io } from "socket.io-client";
 interface Props {}
 const ListContact: React.FC<Props> = () => {
   const [friend, setFriend] = useState<[]>([]);
+  const [userTyping, setUserTyping] = useState<any>([]);
+  const socket: any = useRef();
   const getAllFriend = async () => {
     let accessToken: string = JSON.parse(
       localStorage.getItem("accessToken") || ""
@@ -24,6 +27,12 @@ const ListContact: React.FC<Props> = () => {
     setFriend(result.data.user);
   };
   useEffect(() => {
+    socket.current = io("ws://192.168.18.172:8900", {
+      transports: ["websocket"],
+    });
+    socket.current.on("getUserTyping", (data: any) => {
+      setUserTyping(data);
+    });
     getAllFriend();
   }, []);
   const renderFriend = () => {
@@ -52,30 +61,16 @@ const ListContact: React.FC<Props> = () => {
       <div className="list-contact__messages">
         <div className="title">
           <BiMessageRoundedDetail size={12} />
-          <Typography.Text
-
-          //   level={5}
-          >
-            All Messages
-          </Typography.Text>
+          <Typography.Text>All Messages</Typography.Text>
         </div>
         <div className="list-messages">{renderFriend()}</div>
       </div>
       <div className="list-contact__messages group">
         <div className="title">
           <BsFillPeopleFill size={12} />
-          <Typography.Text
-
-          //   level={5}
-          >
-            Groups
-          </Typography.Text>
+          <Typography.Text>Groups</Typography.Text>
         </div>
-        <div className="list-messages">
-          {/* <PersonalMessage />
-          <PersonalMessage />
-          <PersonalMessage /> */}
-        </div>
+        <div className="list-messages"></div>
       </div>
     </div>
   );
